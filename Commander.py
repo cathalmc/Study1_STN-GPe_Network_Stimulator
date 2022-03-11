@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import time as time
 import random
-from SimulationControl import SimControl()
+from SimulationControl import SimControl
 
 SimControllerMaster = SimControl()
 t0 = time.time()
@@ -41,9 +41,9 @@ for p in pparams2:
     SimControllerActual = SimControl(SimControllerMaster) #copy constructor
 
     SimControllerActual.params["p"] = p
-    SimControllerActual.["weight"] = 0
-    SimControllerActual.["GSweight"] = 0
-    SimControllerActual.["GGweight"] = 0
+    SimControllerActual.params["weight"] = 0
+    SimControllerActual.params["GSweight"] = 0
+    SimControllerActual.params["GGweight"] = 0
     
     os.system(SimControllerActual.Generate_Command())
 
