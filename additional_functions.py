@@ -808,6 +808,9 @@ def fill_dict(STNdata,GPedata,dt,simtime,currents = True):
     #GPeSpikes = np.array(medspkfreqs(GPedata.spiketrains))
     Gmean = meanCVspkfreq(GPedata.spiketrains,simtime)
     
+    P_SLFP = cut_SLFP -np.mean(cut_SLFP ) 
+    P_GLFP = cut_GLFP -np.mean(cut_GLFP )
+    
     nps = int((len(cut_GLFP)-low_cutoff)/4)
     freq, csd = sg.csd(P_SLFP,P_GLFP, fs =1000/dt,nperseg = nps)
     
@@ -818,6 +821,8 @@ def fill_dict(STNdata,GPedata,dt,simtime,currents = True):
     max_coh_val = coh[max_coh_ind]
     phase_at_max = ang_csd[max_coh_ind]
     phase_ms = 1000*phase_at_max/(2*freq_at_max*np.pi)
+    
+    
 
 
     Stats = {
