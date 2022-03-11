@@ -30,8 +30,22 @@ from useful_functions_sonic import *
 import networkx as nx
 from scipy.stats import kurtosis
 from scipy.stats import poisson
-
+from scipy.stats import entropy
 from collections import Counter
+
+from random import shuffle
+
+
+def get_peak_freq(LFP, dt):
+    X = abs(np.fft.fft(LFP-np.mean(LFP)))
+    freq = np.linspace(0,1000/dt,len(X))
+
+    Y = sg.savgol_filter(X, 2*int(1/dt)+1, 3, deriv = 0, mode = 'nearest')
+    Y = Y[0:int(1000/dt)]
+
+    S_Peak_freq = freq[np.nonzero([Y==np.max(Y)])[1][0]]
+    S_Peak_val = np.max(Y)
+    return S_Peak_freq,S_Peak_val
 
 
 def KuramotoPhase(pop,simtime=5000):
@@ -60,16 +74,6 @@ def KuramotoPhase(pop,simtime=5000):
     return np.mean(R[500:-50])
 
 
-def Calc_eigenvals_classic(elist,n):
-    #This is the most efficient way to get eigenvalues of the graph laplacian from an edgelist, even though its very simple
-    L = np.zeros((n,n))
-    for c in elist:
-        L[c[0],c[1]] = -1
-
-    for i in range(n):
-        L[i,i] = -np.sum(L[i,:])
-
-    return np.linalg.eigvals(L)
     
 
 def burst_indicator(trains):
@@ -150,7 +154,7 @@ def YaoFuglevand(pop,dt):
         return 0
 
 
-from scipy.stats import entropy
+
 
 def get_hist(de,bounds = None):
     #bins the data into size 4ms bins and returns the location of the bins and their heights
@@ -166,163 +170,6 @@ def get_hist(de,bounds = None):
     b = a[1][:-1] + np.diff(a[1])/2
     c = a[0]
     return b,c
-
-def calc_mean_timediff(train_list):
-    #calculates the average times difference from a list of spike trains
-    x=0
-    for spk in train_list:
-        x += np.mean(np.diff(spk))
-    
-    return x/len(train_list)
-
-
-def calc_spiketrain_sync(s_trains):
-    #calculates the relative entropy of the spike time distribution compared to a uniform distribution, 
-    #as a proportion of the maximum entropy at full synchrony
-    #based loosely on De Luca 1993, but modified to use relative entropy as the synchrony index
-    
-    main_lis= [] # list of each spike train, converted to a numpy array 
-
-    for sp in s_trains:
-        s_lis = [ float(i) for i in sp if i>500] #add the condition that we only measure spikes after things settle
-        main_lis.append(np.array(s_lis))
-
-    #get list of reference spikes to compare all other spikes to
-    ref_spks = []
-    cnt = 0
-    while len(ref_spks)<5:
-        ref_spks = random.sample(main_lis,k=10)
-        ref_spks = [r for r in ref_spks if len(r)>20]
-        cnt +=1
-        if cnt>10:
-            print("Firing rate too low")
-            return 0
-
-    ref_spks = ref_spks[0:5]
-    
-    alt_spk = main_lis[1]
-    tfs = [] #total forward comparisons
-    tbs = [] #total backward comparisons
-    #compare all spikes in a pairwise manner, calculating nearest preceding and proceding spikes
-    for ref_spk in ref_spks:
-        for alt_spk in main_lis[1::]:
-            if len(alt_spk)>15:
-                start_ind = 0
-                for i,rs in enumerate(ref_spk):
-                    if alt_spk.tolist() == ref_spk.tolist():
-                        #print("skipping equal")
-                        break
-                    prevsgn = 1
-                    prev_diff = 'hi'
-                    for j,aspk in enumerate(alt_spk):
-                        if j>(start_ind-5):
-                            if not(np.sign(prevsgn)==np.sign(rs-aspk)):
-                                tbs.append(prev_diff)
-                                tfs.append(rs-aspk)
-                                start_ind = j
-                                break
-                            else:
-                                prevsgn = np.sign(rs-aspk)
-                                prev_diff = rs-aspk
-    forwardback = tbs+tfs
-    forwardback = [i for i in forwardback if not(i=='hi')]
-    
-    #print(len(forwardback))
-    
-    mtd = calc_mean_timediff(ref_spks)
-    bounds = [-mtd,mtd]
-    
-    bins,vals = get_hist(forwardback,bounds=bounds)
-    
-#     strongest_sync = None
-#     dat=np.random.binomial(len(forwardback),1/len(bins),100*len(forwardback))
-#     p95 = np.percentile(dat,99)
-#     mean = len(tbs+tfs)/len(bins)
-#     significant = [[i[0],i[1]] for i in zip(bins,vals) if i[1]>p95]
-#     if not(significant == []):
-#         most_significant_val  = max([i[1] for i in significant])
-#         for i in significant:
-#             if i[1]==most_significant_val:
-#                 strongest_sync = i
-#                 break
-    tv = np.zeros(len(vals))
-    tv[0]=1
-    max_entropy = entropy(tv, qk=np.ones(len(vals)))
-    current_entropy = entropy(vals, qk=np.ones(len(vals)))
-    
-#     #maximum relative entropy 
-#     print(current_entropy)
-    
-#     plt.figure(figsize=[10,6])
-#     plt.title("Histogram of Recurrence Times. Relative Entropy: {:.3f}%".format(100*entropy(vals, qk=np.ones(len(vals)))/max_entropy))
-#     plt.xlabel("Recurrence Time")
-#     plt.ylabel("Number of Occurances")
-#     plt.bar(bins,vals,width=3)
-    
-    return current_entropy/max_entropy
-
-
-def get_syncpercent(s_trains, p=0):
-    #p is probability of skipping a comparison, can set it pretty high, like 95% and still get good results, depends on a few things
-    spikefreqs  = [i for i in s_trains]
-    main_lis= [] # list of each spike train, converted to a numpy array 
-    #(its a 2d array because later on the distance matrix function requires this)
-    for sp in s_trains:
-        s_lis = [ [0,float(i)] for i in sp if i>500] #add the condition that we only measure spikes after things settle
-        main_lis.append(np.array(s_lis))
-  
-    s = main_lis[0]
-    s_dists = []
-    n = len(main_lis)
-    no_comp = 0
-    for ind,s in enumerate(main_lis):
-        for g_ind in range(ind+1,n):
-            if random.random() <p:
-                continue
-            g = main_lis[g_ind]
-            try:
-                mat = distance_matrix(s,g,p=1)
-                    #measure distance between every spike (can use L1 norm because its 1d)
-            except:
-                continue
-            s_dist = np.amin(mat,axis=1)
-            s_dists.extend(s_dist)
-            no_comp+=1
-            
-    try:
-        b = np.vstack(s_dists)
-    except:
-        if p<0.5:
-                return "null"
-        syncp = get_syncpercent(s_trains,p-0.05)
-        print("Recursion")
-        return syncp
-
-    b = np.vstack(s_dists)
-    tolerance = 1
-    total = len(b)
-    synchronous = b<tolerance
-    synchronous=synchronous.sum()
-    
-    return synchronous/total
-
-def get_Rlist(G_list,n):
-    #return the list of eigenvalues (instead of the min and max values)
-    L = np.zeros((n,n))
-    out_degs = []
-    for c in G_list:
-        L[c[0],c[1]] = -1
-        
-    for i in range(n):
-        out_degs.append(-np.sum(L[i,:]))
-        L[i,i] = -np.sum(L[i,:])
-        
-    E = np.linalg.eigvals(L)
-    
-    #EE = [e for e in E]
-    #EE.sort()
-    return E
-    
 
 
 def Chi_Synchrony(popdata):
@@ -396,18 +243,6 @@ def fill_reciprocal(el):
     properedges = set(et)-set(el)
     return list(properedges)
 
-def SG_SpatialNet(n,k,p):
-    a = np.random.uniform(0,1,size = [n,2])
-    b = np.random.uniform(0,1,size = [n,2])
-    
-    STG_list = realistic_net4(n,n,k,a,b,randomness = p)
-    GTS_list = standalone_get_reciprocal(STG_list)
-    GTG_list = realistic_net4(n,n,k,b,b,randomness = p)
-    GTG_list = GTG_list + fill_reciprocal(GTG_list)
-
-    all_edges = update_index(STG_list,0,n,0) + update_index(GTS_list,n,0,0) + update_index(GTG_list,n,n,0)
-
-    return STG_list,GTS_list,GTG_list,all_edges
     
 def standalone_get_reciprocal(elist):
     el1 = np.array(elist) 
@@ -419,19 +254,6 @@ def standalone_get_reciprocal(elist):
     return el2.tolist()
     
 
-def calculate_eigenvalues(elist,n):
-    L = np.zeros((n,n))
-    #out_degs = []
-    for c in elist:
-        L[c[0],c[1]] = -1
-
-    for i in range(n):
-        #out_degs.append(-np.sum(L[i,:]))
-        L[i,i] = -np.sum(L[i,:])
-
-    eigenvalues = np.linalg.eigvals(L)
-    cond = np.linalg.cond(L)
-    return eigenvalues,cond
     
 def update_index(elist,offset0,offset1,inplace = True):
     if inplace:
@@ -449,38 +271,7 @@ def update_index(elist,offset0,offset1,inplace = True):
 
 
 
-def SBM(n,groups,kintra,kinter):
-    #Stochastic block model 
-    pergroup = int(n/groups)
-    count = 0
-    flag = 0
-    while not(flag):
-        count+=1
-        el = []
-        for g in range(groups):
-            EL1=fast_ER3(pergroup,kintra/(pergroup-1))
-            update_index(EL1,g*pergroup,g*pergroup)
-            el.extend(EL1)
 
-        #max is groups*pergroup^2 
-        EL2=fast_ER3(n,kinter/(n-1))
-        EL2=[i for i in EL2 if not(i in el)]
-        
-        el.extend(EL2)
-
-        B = nx.DiGraph()
-        B.add_edges_from(el)  
-        B = B.to_undirected(reciprocal=False)
-    
-        
-        if nx.is_connected(B):
-            flag = 1
-        else:
-            print("failed ", count)
-        if count>30:
-            raise Exception
-        
-    return el
 
 def fast_ER3(n,frac,reciprocal = False):
     #will return either a directed or undirected edge list for an Erdos Reyni graph
@@ -862,27 +653,11 @@ def GSw(k):
 def GGw(k):
     return RP(k,[ 0.00738542, -0.00900335,  0.00296832, -1.47771821,  0.57017723])
 
-    
 
 def weight_list_pynn_direct(el,wf,n):
     weight = get_degree(el,1,n,rtn=True)
     return [ [e[0],e[1],wf(weight[e[1]][1])]  for e in el ]
 
-
-def normSGw(x):
-    mi = 0.01
-    ma = 0.047
-    return (x-mi)/(ma-mi)
-
-def normGSw(x):
-    mi = 0.71401
-    ma = 2.77470
-    return (x-mi)/(ma-mi)
-
-def normGGw(x):
-    mi = 0.006240
-    ma = 0.025590
-    return (x-mi)/(ma-mi)
 
 def calculate_weigenvalues(elist,n):
     #got it right this time i swear
@@ -1032,6 +807,18 @@ def fill_dict(STNdata,GPedata,dt,simtime,currents = True):
 
     #GPeSpikes = np.array(medspkfreqs(GPedata.spiketrains))
     Gmean = meanCVspkfreq(GPedata.spiketrains,simtime)
+    
+    nps = int((len(cut_GLFP)-low_cutoff)/4)
+    freq, csd = sg.csd(P_SLFP,P_GLFP, fs =1000/dt,nperseg = nps)
+    
+    coh = (abs(csd)**2)
+    ang_csd = np.angle(csd)
+    max_coh_ind = np.argmax(coh)
+    freq_at_max = freq[max_coh_ind]
+    max_coh_val = coh[max_coh_ind]
+    phase_at_max = ang_csd[max_coh_ind]
+    phase_ms = 1000*phase_at_max/(2*freq_at_max*np.pi)
+
 
     Stats = {
              "Peak STN Freq": (S_peak_freq, S_peak_val),
@@ -1040,10 +827,17 @@ def fill_dict(STNdata,GPedata,dt,simtime,currents = True):
              "GPe synchrony": Chi_Synchrony(GPedata.filter(name='soma(0.5).v')[0]),
              "SMean": np.mean(Smean),
              "GMean": np.mean(Gmean),
-              "STNk":KuramotoPhase(STNdata,simtime),
+             "STNk":KuramotoPhase(STNdata,simtime),
             "GPek":KuramotoPhase(GPedata, simtime),
             "SISIstd":Spike_CV(STNdata.spiketrains),
-            "GISIstd":Spike_CV(GPedata.spiketrains)
+            "GISIstd":Spike_CV(GPedata.spiketrains),
+             "Max CSD": max(abs(csd)),
+             "Max COH": max_coh_val,
+             "Max COH Freq":freq_at_max,
+             "Max COH Phase": phase_at_max,
+             "STNyf":YaoFuglevand(STNdata,dt),
+            "GPeyf":YaoFuglevand(GPedata,dt),
+             
 
             }
     if currents:
