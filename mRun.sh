@@ -7,7 +7,7 @@
 #SBATCH -n 10
 
 # Set the walltime of the job to 10 mins (format is hh:mm:ss)
-#SBATCH -t 6:00:00
+#SBATCH -t TIME
 
 # E-mail on begin (b), abort (a), and end (end) of job
 #SBATCH --mail-type=ALL

@@ -15,9 +15,11 @@ SimControllerMaster.params["simtime"] = 3000
 
 SimControllerMaster.params["recip"] = 1
 SimControllerMaster.params["k"] = 10
+SimControllerMaster.params["n"] = 200
+SimControllerMaster.params["h"] = 0.1
 
 if sys.argv[3] == "Spatial":
-    pparams = np.linspace(-2,5,100)
+    pparams = np.linspace(-2,5,10)
 elif sys.argv[3] == "Small_world":
     raise Exception
 elif sys.argv[3] == "Scale_free":
