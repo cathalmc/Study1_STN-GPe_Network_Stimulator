@@ -3,7 +3,7 @@ import sys
 
 newloc=sys.argv[1]
 runtime=sys.argv[2]
-cores=sys.argv[3]
+cores=int(sys.argv[3])
 net=sys.argv[4]
 
 assert (cores<9)
