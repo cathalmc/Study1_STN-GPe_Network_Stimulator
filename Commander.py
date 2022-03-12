@@ -19,15 +19,15 @@ SimControllerMaster.params["n"] = 1000
 SimControllerMaster.params["h"] = 0.01
 
 if sys.argv[3] == "Spatial":
-    params["p"] = 0.01
+    SimControllerMaster.params["p"] = 0.01
 elif sys.argv[3] == "Small_world":
-    params["p"] = 0.01
+    SimControllerMaster.params["p"] = 0.01
 elif sys.argv[3] == "Scale_free":
-    params["p"] =  1
+    SimControllerMaster.params["p"] =  1
 elif sys.argv[3] == "SBlock":
-    params["p"] = 1-0.01
+    SimControllerMaster.params["p"] = 1-0.01
 elif sys.argv[3] == "Regular":
-    params["p"] = 0
+    SimControllerMaster.params["p"] = 0
 else:
     raise Exception
 
@@ -38,10 +38,10 @@ stride = int(sys.argv[1])
 core = int(sys.argv[2]) +0.5 #+0.5 so that it rounds instead of truncates
 kvals = kvals[np.arange(int(core),len(kvals),stride,dtype=int)]
 
-for p in pparams2:
+for k in kvals:
     SimControllerActual = SimControl(SimControllerMaster) #copy constructor
 
-    SimControllerActual.params["p"] = p
+    SimControllerActual.params["k"] = k
     SimControllerActual.params["weight"] = 0
     SimControllerActual.params["GSweight"] = 0
     SimControllerActual.params["GGweight"] = 0
