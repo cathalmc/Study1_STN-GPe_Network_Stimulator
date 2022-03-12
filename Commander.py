@@ -19,15 +19,15 @@ SimControllerMaster.params["n"] = 1000
 SimControllerMaster.params["h"] = 0.01
 
 if sys.argv[3] == "Spatial":
-    pparams = np.geomspace(0.01,1,50)
+    params["p"] = 0.01
 elif sys.argv[3] == "Small_world":
-    raise Exception
+    params["p"] = 0.01
 elif sys.argv[3] == "Scale_free":
-    raise Exception
+    params["p"] =  1
 elif sys.argv[3] == "SBlock":
-    raise Exception
+    params["p"] = 1-0.01
 elif sys.argv[3] == "Regular":
-    raise Exception
+    params["p"] = 0
 else:
     raise Exception
 
