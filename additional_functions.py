@@ -189,10 +189,6 @@ def get_peak_freq(LFP,dt):
     X = abs(np.fft.fft(LFP-np.mean(LFP))) #subtract minimum value to remove DC component
     freq = np.linspace(0,1000/dt,len(X)) #frequency vector in Hz (the 1000 is because dt is given in ms)
     
-    #CHANGE, no more filtering
-    #Y = sg.savgol_filter(X, 2*int(1/dt)+1, 3, deriv = 0, mode = 'nearest') #filter window is roughly 2ms long
-    #Y = Y[0:int(1000/dt)]
-    
     
     Y = X[0:int(1000/dt)]
 
@@ -647,7 +643,7 @@ def SGw(k):
     return RP(k,[5.36136618e-02, 7.84971296e-04, 1.70872617e-05, 7.60268396e-02, 1.65661773e-03])
 
 def GSw(k):
-    return RP(k,[ 0.89267081, -0.3185804,   0.03072525, -0.39464718,  0.03887508])
+    return RP(k,[112.93,9.74,0,15.70,0])
 
 def GGw(k):
     return RP(k,[-1.78602715e-02,  4.56797069e-03,  4.34869983e-05, -8.29968972e-02, 1.03167752e-02])
