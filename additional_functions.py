@@ -839,9 +839,6 @@ def fill_dict(STNdata,GPedata,dt,simtime,currents = True):
              "Max COH": max_coh_val,
              "Max COH Freq":freq_at_max,
              "Max COH Phase": phase_at_max,
-             "STNyf":YaoFuglevand(STNdata,dt),
-            "GPeyf":YaoFuglevand(GPedata,dt),
-             
 
             }
     if currents:

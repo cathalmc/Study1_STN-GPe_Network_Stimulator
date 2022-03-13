@@ -16,7 +16,7 @@ SimControllerMaster.params["simtime"] = 5000
 SimControllerMaster.params["recip"] = 1
 SimControllerMaster.params["k"] = 10
 SimControllerMaster.params["n"] = 1000
-SimControllerMaster.params["h"] = 0.01
+SimControllerMaster.params["h"] = 0.02
 
 if sys.argv[3] == "Spatial":
     SimControllerMaster.params["p"] = 0.01
