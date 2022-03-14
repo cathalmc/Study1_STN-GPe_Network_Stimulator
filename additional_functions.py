@@ -763,8 +763,13 @@ def SG_Regular(n,k,p=None,r=None):
         el.append((e[1],e[0])  )
         
     STG_list,GTS_list = get_partial_reciprocal(el,n,recip=r)
+    
+    el2  = []
+    for e in nx.random_regular_graph(k,n).edges:
+        el2.append(tuple(e))
+        el2.append((e[1],e[0])  )
 
-    GTG_list = set_reciprocal(el,n,r)
+    GTG_list = set_reciprocal(el2,n,r)
 
     return calc_network_measures(STG_list,GTS_list,GTG_list,n)
     
