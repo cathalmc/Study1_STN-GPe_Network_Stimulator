@@ -14,7 +14,7 @@ fout = open("Run.sh", "wt", newline='')
 
 for line in fin:
     if line.strip()=="SLURM_NTASKS=6":
-        new_core = "#SLURM_NTASKS="+str(cores)
+        new_core = "SLURM_NTASKS="+str(cores)
         fout.write(new_core+"\n")
     
     elif line.strip()=="#SBATCH -t TIME":
