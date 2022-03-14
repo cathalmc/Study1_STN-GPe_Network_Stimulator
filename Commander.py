@@ -12,8 +12,8 @@ t0 = time.time()
 SimControllerMaster.params["name"] = "SG_July_NormSingle" ##### MAKE SURE NAME IS A SINGLE CONTINUOUS STRING SO SUBMITTER DOESNT GET CONFUSED
 SimControllerMaster.params["Network_type"] = sys.argv[3]
 SimControllerMaster.params["simtime"] = 5000
-
-print(f"Using network: {SimControllerMaster.params["Network_type"]}")
+nt= SimControllerMaster.params["Network_type"]
+print(f"Using network: {nt}")
 
 SimControllerMaster.params["recip"] = 1
 SimControllerMaster.params["n"] = 500
