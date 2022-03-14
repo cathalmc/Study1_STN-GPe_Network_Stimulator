@@ -13,9 +13,10 @@ SimControllerMaster.params["name"] = "SG_July_NormSingle" ##### MAKE SURE NAME I
 SimControllerMaster.params["Network_type"] = sys.argv[3]
 SimControllerMaster.params["simtime"] = 5000
 
+print(f"Using network: {SimControllerMaster.params["Network_type"]}")
+
 SimControllerMaster.params["recip"] = 1
-SimControllerMaster.params["k"] = 10
-SimControllerMaster.params["n"] = 1000
+SimControllerMaster.params["n"] = 500
 SimControllerMaster.params["h"] = 0.02
 
 if sys.argv[3] == "Spatial":
@@ -32,7 +33,7 @@ else:
     raise Exception
 
 
-max_k = 500
+max_k = 400
 kvals= np.array(list(set([int(i+0.5) for i in np.geomspace(2,max_k,max_k-1)])),dtype=int)
 stride = int(sys.argv[1])
 core = int(sys.argv[2]) +0.5 #+0.5 so that it rounds instead of truncates
@@ -45,8 +46,9 @@ for k in kvals:
     SimControllerActual.params["weight"] = 0
     SimControllerActual.params["GSweight"] = 0
     SimControllerActual.params["GGweight"] = 0
-    
-    os.system(SimControllerActual.Generate_Command())
+    runcommand = SimControllerActual.Generate_Command()
+    print(runcommand)
+    os.system(runcommand)
 
 
 
