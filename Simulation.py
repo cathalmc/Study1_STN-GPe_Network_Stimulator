@@ -155,12 +155,13 @@ data_dict["Time_taken"] = t1-t0
 for key in graph_measures:
     data_dict[key] = graph_measures[key]
     
-
 dat = [data_dict]
-
 
 if params["Notebook"] == 1:
     np.save("NotebookData.npy",np.array({"STN":STN,"GPe":GPe,"data":data_dict}))
+elif params["Notebook"] == 2:
+    np.save("NotebookData.npy",np.array({"STN":STN,"GPe":GPe,"data":data_dict}))
+    np.save("NotebookNetworkData.npy",np.array({"STG_list":STG_list,"GTS_list":GTS_list,"GTG_list":GTG_list,"graph_measures":graph_measures}))
 else:
     initname =  ''.join('_{:.3f}'.format(params[x]) if type(params[x])==float else '_{:}'.format(params[x]) for x in params)
     filename = 'Run_data_{:}_t{:.5f}.npy'.format(initname,float(t1-t0))
