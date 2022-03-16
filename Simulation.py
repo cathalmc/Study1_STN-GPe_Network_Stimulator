@@ -157,11 +157,28 @@ for key in graph_measures:
     
 dat = [data_dict]
 
+def AccuSave(data_dict):
+    eigs=sorted(data_dict["eigs"])
+    lam2=eigs[1]
+    lamN=eigs[-1]
+    smallsave = {key:val for key,val in data_dict.items() if not(key=='eigs')}
+    smallsave["lam2"]=lam2
+    smallsave["lamN"]=lamN
+    smallsave["R"]=lamN/lam2
+    olddat = np.load('Acumulated_data.npy',allow_pickle=True)
+    newdat = np.append(olddat,smallsave)
+    np.save("Acumulated_data.npy",newdat)
+
+
+
 if params["Notebook"] == 1:
     np.save("NotebookData.npy",np.array({"STN":STN,"GPe":GPe,"data":data_dict}))
+    AccuSave(data_dict)
+
 elif params["Notebook"] == 2:
     np.save("NotebookData.npy",np.array({"STN":STN,"GPe":GPe,"data":data_dict}))
     np.save("NotebookNetworkData.npy",np.array({"STG_list":STG_list,"GTS_list":GTS_list,"GTG_list":GTG_list,"graph_measures":graph_measures}))
+    AccuSave(data_dict)
 else:
     initname =  ''.join('_{:.3f}'.format(params[x]) if type(params[x])==float else '_{:}'.format(params[x]) for x in params)
     filename = 'Run_data_{:}_t{:.5f}.npy'.format(initname,float(t1-t0))
