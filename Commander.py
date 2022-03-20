@@ -11,13 +11,13 @@ t0 = time.time()
 
 SimControllerMaster.params["name"] = "SG_July_NormSingle" ##### MAKE SURE NAME IS A SINGLE CONTINUOUS STRING SO SUBMITTER DOESNT GET CONFUSED
 SimControllerMaster.params["Network_type"] = sys.argv[3]
-SimControllerMaster.params["simtime"] = 3000
+SimControllerMaster.params["simtime"] = 5000
 nt= SimControllerMaster.params["Network_type"]
 print(f"Using network: {nt}")
 
 SimControllerMaster.params["recip"] = 1
-SimControllerMaster.params["n"] = 100
-SimControllerMaster.params["h"] = 0.05
+SimControllerMaster.params["n"] = 500
+SimControllerMaster.params["h"] = 0.02
 
 if sys.argv[3] == "Spatial":
     SimControllerMaster.params["p"] = 0.01
@@ -33,7 +33,7 @@ else:
     raise Exception
 
 
-max_k = 80
+max_k = 300
 kvals= np.array(list(set([int(i+0.5) for i in np.geomspace(2,max_k,max_k-1)])),dtype=int)
 stride = int(sys.argv[1])
 core = int(sys.argv[2]) +0.5 #+0.5 so that it rounds instead of truncates
