@@ -635,19 +635,18 @@ def SBlock(n,k,p):
     return [list(i) for i in x.edges]
 
 def RP(x,vec):
-    x = max(x,4)
+    x = max(x,2)
     a0,a1,a2,b1,b2 = vec
     return (a0+a1*x+a2*x*x)/(1+b1*x+b2*x*x)
 
 def SGw(k):
-    return RP(k,[5.36136618e-02, 7.84971296e-04, 1.70872617e-05, 7.60268396e-02, 1.65661773e-03])
+    return RP(k,[-16381.18886771,  26919.8205811 ,    995.72232084, 144111.50287741, 117905.41781918])
 
 def GSw(k):
-    return RP(k,[112.93,9.74,0,15.70,0])
+    return RP(k,[ 3.50340187,  0.58337319,  0.01772263, -0.07301598,  0.03332756])
 
 def GGw(k):
-    return RP(k,[-1.78602715e-02,  4.56797069e-03,  4.34869983e-05, -8.29968972e-02, 1.03167752e-02])
-
+    return RP(k,[ 2.83192098e-03,  6.66722093e-04,  5.73021456e-06, -8.26724709e-02,4.37348226e-03])
 
 def weight_list_pynn_direct(el,wf,n):
     weight = get_degree(el,1,n,rtn=True)
