@@ -34,7 +34,7 @@ else:
 
 
 max_k = 500
-replicates = 5
+replicates = 2
 stride = int(sys.argv[1])
 core = int(sys.argv[2])
 
