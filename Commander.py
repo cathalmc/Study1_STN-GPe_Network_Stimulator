@@ -16,7 +16,7 @@ nt= SimControllerMaster.params["Network_type"]
 print(f"Using network: {nt}")
 
 SimControllerMaster.params["recip"] = 1
-SimControllerMaster.params["n"] = 500
+SimControllerMaster.params["n"] = 1000
 SimControllerMaster.params["h"] = 0.02
 
 if sys.argv[3] == "Spatial":
@@ -33,11 +33,15 @@ else:
     raise Exception
 
 
-max_k = 300
-kvals= np.array(list(set([int(i+0.5) for i in np.geomspace(2,max_k,max_k-1)])),dtype=int)
+max_k = 500
+replicates = 5
 stride = int(sys.argv[1])
-core = int(sys.argv[2]) +0.5 #+0.5 so that it rounds instead of truncates
-kvals = kvals[np.arange(int(core),len(kvals),stride,dtype=int)]
+core = int(sys.argv[2])
+
+kvals= list(set([int(i+0.5) for i in np.geomspace(2,max_k,max_k-1)])) #geometrically spaced values
+kvals=np.array([kv for _ in range(replicates) for kv in kvals ],dtype=int) #add in replicates
+kvals = sorted(kvals[np.arange(int(core),len(kvals),stride,dtype=int)],reverse=core%2) #assign values to core
+
 
 for k in kvals:
     SimControllerActual = SimControl(SimControllerMaster) #copy constructor
@@ -47,7 +51,7 @@ for k in kvals:
     SimControllerActual.params["GSweight"] = 0
     SimControllerActual.params["GGweight"] = 0
     runcommand = SimControllerActual.Generate_Command()
-    print(runcommand)
+    #print(runcommand)
     os.system(runcommand)
 
 
