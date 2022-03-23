@@ -16,7 +16,7 @@ nt= SimControllerMaster.params["Network_type"]
 print(f"Using network: {nt}")
 
 SimControllerMaster.params["recip"] = 1
-SimControllerMaster.params["n"] = 500
+SimControllerMaster.params["n"] = 100
 SimControllerMaster.params["h"] = 0.02
 
 if sys.argv[3] == "Spatial":
@@ -33,7 +33,7 @@ else:
     raise Exception
 
 
-max_k = 300
+max_k = 900
 replicates = 5
 stride = int(sys.argv[1])
 core = int(sys.argv[2])
