@@ -33,7 +33,7 @@ else:
     raise Exception
 
 
-max_k = 900
+max_k = 90
 replicates = 5
 stride = int(sys.argv[1])
 core = int(sys.argv[2])
