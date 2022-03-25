@@ -25,7 +25,7 @@ ps = {"Spatial": 0.01,
       "SBlock": 1-0.01,
       "Regular": 0,}
       
-SimControllerMaster.params["p"] = ps[nt]      
+#SimControllerMaster.params["p"] = ps[nt]      
 
 d2 = [{'Network_type': 'Small_world', 'n': '500', 'k': 13},
  {'Network_type': 'Small_world', 'n': '500', 'k': 13},
