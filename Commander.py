@@ -27,10 +27,25 @@ ps = {"Spatial": 0.01,
       
 SimControllerMaster.params["p"] = ps[nt]      
 
-d1 = [{'Network_type':"Scale_free",'n':1000,'k':str(i)} for i in [433, 458, 484] for _ in range(2)]
+d2 = [{'Network_type': 'Small_world', 'n': '500', 'k': 13},
+ {'Network_type': 'Small_world', 'n': '500', 'k': 13},
+ {'Network_type': 'Small_world', 'n': '500', 'k': 13},
+ {'Network_type': 'Small_world', 'n': '500', 'k': 15},
+ {'Network_type': 'Small_world', 'n': '500', 'k': 15},
+ {'Network_type': 'Small_world', 'n': '500', 'k': 15},
+ {'Network_type': 'Small_world', 'n': '500', 'k': 15},
+ {'Network_type': 'Small_world', 'n': '500', 'k': 237},
+ {'Network_type': 'Small_world', 'n': '500', 'k': 237},
+ {'Network_type': 'Small_world', 'n': '500', 'k': 245},
+ {'Network_type': 'Small_world', 'n': '500', 'k': 245},
+ {'Network_type': 'Small_world', 'n': '500', 'k': 254},
+ {'Network_type': 'Small_world', 'n': '500', 'k': 254},
+ {'Network_type': 'SBlock', 'n': '500', 'k': 2},
+ {'Network_type': 'SBlock', 'n': '500', 'k': 285},
+ {'Network_type': 'SBlock', 'n': '500', 'k': 4},
+ {'Network_type': 'SBlock', 'n': '500', 'k': 6}]
 
-
-for dct in d1:
+for dct in d2:
     SimControllerActual = SimControl(SimControllerMaster) #copy constructor
     
     SimControllerActual.params["Network_type"] = dct["Network_type"]
