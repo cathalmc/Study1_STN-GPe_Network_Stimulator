@@ -98,7 +98,7 @@ d3 = [{'Network_type': 'Scale_free', 'n': '1000', 'k': 10},
 stride = int(sys.argv[1])
 core = int(sys.argv[2])
 
-torun = d3[np.arange(int(core),len(d3),stride,dtype=int)]
+torun = np.array(d3)[np.arange(int(core),len(d3),stride,dtype=int)]
 
 for dct in torun:
     SimControllerActual = SimControl(SimControllerMaster) #copy constructor
