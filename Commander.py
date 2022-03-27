@@ -95,8 +95,12 @@ d3 = [{'Network_type': 'Scale_free', 'n': '1000', 'k': 10},
  {'Network_type': 'Scale_free', 'n': '1000', 'k': 8},
  {'Network_type': 'Scale_free', 'n': '1000', 'k': 9}]
  
+stride = int(sys.argv[1])
+core = int(sys.argv[2])
 
-for dct in d3:
+torun = d3[np.arange(int(core),len(d3),stride,dtype=int)]
+
+for dct in torun:
     SimControllerActual = SimControl(SimControllerMaster) #copy constructor
     
     SimControllerActual.params["Network_type"] = dct["Network_type"]
