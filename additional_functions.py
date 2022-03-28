@@ -786,7 +786,50 @@ def SG_SmallWorld(n,k,p,r=1):
     GTG_list = set_reciprocal(fastSW(n,k,p),n,r)
 
     return calc_network_measures(STG_list,GTS_list,GTG_list,n) 
+
+
+def ImprovedSpatial(dist,n,k,p,GG=False):
+    if GG:
+        np.fill_diagonal(dist,0)
     
+    w = dist.reshape(-1)
+    x = sorted(w,reverse=True)
+    y = np.arange(len(x))/(len(x))#
+    z = y**np.exp(p)
+    chosen = np.random.choice(x,n*k,replace=False,p=z/sum(z))
+    indices=[]
+    for i in chosen:
+        indices.append(np.argwhere(w==i)[0][0])
+    el = [(int(d/n), d%n) for d in indices]
+    
+    return el
+
+def SG_SpatialImproved(n,k,p,r=1):
+    dim = 2
+    a = np.random.uniform(0,1,size = [n,dim])
+    b = np.random.uniform(0,1,size = [n,dim])
+
+    distxy = distance_matrix(a,b,p=2) #distances from points x to points y
+    distyy = distance_matrix(b,b,p=2) #distances between points y
+    
+    STG_list,GTS_list = get_partial_reciprocal(ImprovedSpatial(distxy,n,k,p),n,recip=r)
+    diameter = 0
+    count = 0
+    while (diameter==0):
+        if count>0:
+            print(f"Spatial generation failed, trying again. Count = {count}")
+        GTG_list = set_reciprocal(ImprovedSpatial(distyy,n,k,p,GG=True),n,r)
+        STG_list,GTS_list,GTG_list, graph_measures = calc_network_measures(STG_list,GTS_list,GTG_list,n)
+        diameter = graph_measures["diameter"]
+        if count>5:
+            break
+        
+    return STG_list,GTS_list,GTG_list, graph_measures
+
+
+
+
+  
 
 def fill_dict(STNdata,GPedata,dt,simtime,currents = True):
     low_cutoff = int(500/dt) #number of segments corresponding to first 500ms

@@ -80,7 +80,8 @@ gen_functions = {   "Scale_free":SG_ScaleFree,
                     "Small_world": SG_SmallWorld,
                     "Spatial":SG_ExponentialSpatial,
                     "Regular":SG_Regular,
-                    "SBlock":SG_SBlock}
+                    "SBlock":SG_SBlock,
+                    "ImprovedSpatial":SG_SpatialImproved}
 
 
 network_gen_function = gen_functions[params["Network_type"]]

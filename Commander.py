@@ -27,7 +27,7 @@ ps = {"Spatial": 0.01,
       
 #SimControllerMaster.params["p"] = ps[nt]    
 
-run_list=np.geomspace(0.01,2,100)
+run_list=np.linspace(-10,10,1000)
 
 stride = int(sys.argv[1])
 core = int(sys.argv[2])

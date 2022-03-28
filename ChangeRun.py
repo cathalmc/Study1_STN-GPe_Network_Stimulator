@@ -7,7 +7,7 @@ cores=int(sys.argv[3])
 net=sys.argv[4]
 
 assert (cores<9)
-assert net in ["Small_world","Scale_free","Spatial","Regular","SBlock"]
+assert net in ["Small_world","Scale_free","Spatial","Regular","SBlock","ImprovedSpatial"]
 
 fin = open("mRun.sh", "rt")
 fout = open("Run.sh", "wt", newline='')
