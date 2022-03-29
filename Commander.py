@@ -27,12 +27,14 @@ ps = {"Spatial": 0.01,
       
 #SimControllerMaster.params["p"] = ps[nt]    
 
-run_list=np.linspace(-10,10,1000)
+run_list=np.linspace(0,6,1000)
+torun=np.array([kv for _ in range(replicates) for kv in run_list ],dtype=int) 
 
 stride = int(sys.argv[1])
 core = int(sys.argv[2])
 
-torun = np.array(run_list)[np.arange(int(core),len(run_list),stride,dtype=int)]
+torun = torun[np.arange(int(core),len(torun),stride,dtype=int)]
+
 
 for d in torun:
     SimControllerActual = SimControl(SimControllerMaster) #copy constructor
