@@ -19,16 +19,21 @@ SimControllerMaster.params["n"] = 500
 SimControllerMaster.params["k"] = 10
 SimControllerMaster.params["h"] = 0.02
 
-ps = {"Spatial": 0.01,
-      "Small_world":0.01 ,
-      "Scale_free": 1, 
-      "SBlock": 1-0.01,
-      "Regular": 0,}
+
       
 #SimControllerMaster.params["p"] = ps[nt]    
+ps = {"ImprovedSpatial": np.linspace(0,6,1000),
+    "Small_world":np.linspace(1e-3,1,1000) ,
+        "Scale_free": np.linspace(1e-4,4,1000), 
+        "SBlock": 1-np.linspace(1e-3,1,1000)
+        "Regular": 0,}
 
-run_list=np.linspace(0,6,1000)
-torun=np.array([kv for _ in range(replicates) for kv in run_list ],dtype=int) 
+
+run_list=ps[SimControllerMaster.params["Network_type"]]
+torun=run_list
+
+#replicates = 20
+#torun=np.array([kv for _ in range(replicates) for kv in run_list ],dtype=int) 
 
 stride = int(sys.argv[1])
 core = int(sys.argv[2])
@@ -62,4 +67,6 @@ print("Total Time taken {:.3f}".format(t1-t0))
 # kvals= list(set([int(i+0.5) for i in np.geomspace(2,max_k,max_k-1)])) #geometrically spaced values
 # kvals=np.array([kv for _ in range(replicates) for kv in kvals ],dtype=int) #add in replicates
 # kvals = sorted(kvals[np.arange(int(core),len(kvals),stride,dtype=int)],reverse=core%2) #assign values to core
+
+#ps = {"Spatial": 0.01,"Small_world":0.01 ,"Scale_free": 1, "SBlock": 1-0.01,"Regular": 0,}
 
