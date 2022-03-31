@@ -19,7 +19,7 @@ SimControllerMaster.params["n"] = 200
 SimControllerMaster.params["k"] = 10
 SimControllerMaster.params["h"] = 0.01
 
-SimControllerActual.params["p"] = 1
+SimControllerMaster.params["p"] = 1
 
       
 #SimControllerMaster.params["p"] = ps[nt]    
