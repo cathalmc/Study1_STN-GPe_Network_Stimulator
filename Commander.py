@@ -37,6 +37,7 @@ for i in [5,10,15,20,25,30,40,60,100,120,140,150]:
     for j in [0.1,0.5,1,2,3,5]: #length of the negative current input in biphasic DBS
         for k in [0.02,0.1,0.2,0.5,1.0,2.0]:
             torun.append({"StimFrequency":i,"StimAmplitude":j,"StimSites":k})
+torun=np.array(torun)
 
 #replicates = 20
 #torun=np.array([kv for _ in range(replicates) for kv in run_list ],dtype=int) 
