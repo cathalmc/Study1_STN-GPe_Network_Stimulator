@@ -69,7 +69,7 @@ t = 1000/fs
 stimstrt = 100   
 pw = params["StimSites"] #pulse width?
 cbf = params["StimAmplitude"]
-num_to_stim = #params["StimSites"]
+num_to_stim = params['n']#params["StimSites"]
 simtime = params["simtime"]
 stimstop=simtime
 
