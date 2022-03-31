@@ -10,15 +10,16 @@ t0 = time.time()
 
 SimControllerMaster.params["name"] = "SG_July_NormSingle" ##### MAKE SURE NAME IS A SINGLE CONTINUOUS STRING SO SUBMITTER DOESNT GET CONFUSED
 SimControllerMaster.params["Network_type"] = sys.argv[3]
-SimControllerMaster.params["simtime"] = 5000
+SimControllerMaster.params["simtime"] = 3000
 #nt= SimControllerMaster.params["Network_type"]
 #print(f"Using network: {nt}")
 
 SimControllerMaster.params["recip"] = 1
-SimControllerMaster.params["n"] = 500
+SimControllerMaster.params["n"] = 200
 SimControllerMaster.params["k"] = 10
-SimControllerMaster.params["h"] = 0.02
+SimControllerMaster.params["h"] = 0.01
 
+SimControllerActual.params["p"] = 1
 
       
 #SimControllerMaster.params["p"] = ps[nt]    
@@ -30,7 +31,12 @@ ps = {"ImprovedSpatial": np.linspace(0,6,1000),
 
 
 run_list=ps[SimControllerMaster.params["Network_type"]]
-torun=run_list
+
+torun=[]
+for i in [5,10,15,20,25,30,40,60,100,120,140,150]:
+    for j in [0.1,0.5,1,2,3,5]: #length of the negative current input in biphasic DBS
+        for k in [0.02,0.1,0.2,0.5,1.0,2.0]:
+            torun.append({"StimFrequency":i,"StimAmplitude":j,"StimSites":k})
 
 #replicates = 20
 #torun=np.array([kv for _ in range(replicates) for kv in run_list ],dtype=int) 
@@ -44,7 +50,9 @@ torun = torun[np.arange(int(core),len(torun),stride,dtype=int)]
 for d in torun:
     SimControllerActual = SimControl(SimControllerMaster) #copy constructor
     
-    SimControllerActual.params["p"] = d
+    SimControllerActual.params["StimFrequency"] = d["StimFrequency"]
+    SimControllerActual.params["StimAmplitude"] = d["StimAmplitude"]
+    SimControllerActual.params["StimSites"] = d["StimSites"]
     
     SimControllerActual.params["weight"] = 0
     SimControllerActual.params["GSweight"] = 0

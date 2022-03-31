@@ -62,16 +62,16 @@ def cdb(x):
     else:
         return 0
 
-amp=params["StimAmplitude"]
+amp=20 #params["StimAmplitude"]
 fs=params["StimFrequency"]
 t = 1000/fs
 
-stimstrt = 200   
-pw = 0.2 #pulse width?
-cbf = 3
-num_to_stim = params["StimSites"]
+stimstrt = 100   
+pw = params["StimSites"] #pulse width?
+cbf = params["StimAmplitude"]
+num_to_stim = #params["StimSites"]
 simtime = params["simtime"]
-stimstop=4200
+stimstop=simtime
 
 
 recip = params['recip']
