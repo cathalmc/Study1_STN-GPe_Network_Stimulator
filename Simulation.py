@@ -48,7 +48,7 @@ params = {  "k":float(sys.argv[1]),
                 "n":int(sys.argv[17]),
                 "h":float(sys.argv[18]),
                 "Notebook":int(sys.argv[19]),
-                "StimSites":int(sys.argv[20]),
+                "StimSites":float(sys.argv[20]),
                 "StimAmplitude":float(sys.argv[21]),
                 "StimFrequency":float(sys.argv[22])
                 }
