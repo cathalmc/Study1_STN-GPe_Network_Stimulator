@@ -853,7 +853,7 @@ def fill_dict(STNdata,GPedata,dt,simtime,currents = True):
     P_SLFP = cut_SLFP -np.mean(cut_SLFP ) 
     P_GLFP = cut_GLFP -np.mean(cut_GLFP )
     
-    nps = int((len(cut_GLFP)-low_cutoff)/4)
+    nps = int(len(cut_GLFP)/4)
     freq, csd = sg.csd(P_SLFP,P_GLFP, fs =1000/dt,nperseg = nps)
     
     coh = (abs(csd)**2)

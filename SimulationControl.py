@@ -33,7 +33,11 @@ class SimControl():
                 
                 "n":100,
                 "h":0.01,
-                "Notebook":0
+                "Notebook":0,
+                "StimSites":0,
+                "StimAmplitude":0,
+                "StimFrequency":1,
+                
                 }
                 
     def copy_constructor(self, orig):
@@ -66,7 +70,10 @@ class SimControl():
                     "convergence": 15,
                     "n":16,
                     "h":17,
-                    "Notebook":18
+                    "Notebook":18,
+                    "StimSites":19,
+                "StimAmplitude":20,
+                "StimFrequency":21,
                     }
         dict_list = [np.nan for i in range(len(list_map))]
 

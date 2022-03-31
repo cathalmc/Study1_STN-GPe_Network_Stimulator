@@ -47,10 +47,32 @@ params = {  "k":float(sys.argv[1]),
                 "convergence": int(sys.argv[16]),
                 "n":int(sys.argv[17]),
                 "h":float(sys.argv[18]),
-                "Notebook":int(sys.argv[19])
+                "Notebook":int(sys.argv[19]),
+                "StimSites":int(sys.argv[20]),
+                "StimAmplitude":float(sys.argv[21]),
+                "StimFrequency":float(sys.argv[22])
                 }
                 
                 
+def cdb(x):
+    if x%3==0:
+        return 1
+    elif x%3==1:
+        return -1/cbf
+    else:
+        return 0
+
+amp=params["StimAmplitude"]
+fs=params["StimFrequency"]
+t = 1000/fs
+
+stimstrt = 200   
+pw = 0.2 #pulse width?
+cbf = 3
+num_to_stim = params["StimSites"]
+simtime = params["simtime"]
+stimstop=4200
+
 
 recip = params['recip']
 k = int(2*params['k']/(1+recip))            
@@ -69,8 +91,14 @@ delays = params['delay']*np.array([2,2,1]) #GPe delay is shorter
 n= params['n'] 
 
 dt         = params['h']           # (ms) #############################################!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! best 0.03, use 0.1 for quick
-max_syn_delay  = 2*params['h']            # (ms)
+max_syn_delay  = 2*params['delay']           # (ms)
 sim.setup(timestep=dt, max_delay=max_syn_delay)
+
+if params["StimSites"]>0:
+    print("Performing external stimulation")
+    x = sorted(np.arange(stimstrt,stimstop,t).tolist()+np.arange(stimstrt+pw,stimstop,t).tolist()+np.arange(stimstrt+(pw*(1+cbf)),stimstop,t).tolist())
+    y = [amp*cdb(i) for i in range(len(x))]
+    cs3 = sim.StepCurrentSource(times=x, amplitudes = y)
 
 
 if not(params["Network_type"]=="Stochastic_block"):
@@ -124,11 +152,15 @@ GPeNoise = [sim.NoisyCurrentSource(mean=0, stdev = 0.05, start=0,stop =simtime,d
 
 for i,cell in enumerate(STN_cells):
     cell.inject(STNNoise[i])
+    
 
 for i,cell in enumerate(GPe_cells):
     cell.inject(GPeNoise[i])
 
-
+if num_to_stim>0:
+    for cell in STN_cells[np.random.choice(n,num_to_stim,replace=False)]:
+        cell.inject(cs3)
+        
 ### Recording
 STN_cells.record('spikes')
 GPe_cells.record('spikes')
