@@ -12,6 +12,11 @@ SimControllerMaster.params["name"] = "SG_July_NormSingle" ##### MAKE SURE NAME I
 SimControllerMaster.params["Network_type"] = sys.argv[3]
 SimControllerMaster.params["simtime"] = 5000
 
+tester = sys.argv[4]
+testrun=False
+if tester=="tester":
+    testrun=True
+    print("Validating")
 
 SimControllerMaster.params["recip"] = 1
 SimControllerMaster.params["n"] = 500
@@ -53,8 +58,12 @@ for d in torun:
     SimControllerActual.params["GSweight"] = 0
     SimControllerActual.params["GGweight"] = 0
     runcommand = SimControllerActual.Generate_Command()
-    #print(runcommand)
-    os.system(runcommand)
+    
+    if testrun:
+        print(d)
+        #print(runcommand)
+    else:
+        os.system(runcommand)
 
 
 
