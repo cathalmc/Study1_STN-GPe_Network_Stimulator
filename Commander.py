@@ -41,7 +41,7 @@ core = int(sys.argv[2])
 torun = torun[np.arange(int(core),len(torun),stride,dtype=int)]
 
 
-for d in run_list:
+for d in torun:
     SimControllerActual = SimControl(SimControllerMaster) #copy constructor
     SimControllerActual.params["p"] = d
     
