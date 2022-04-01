@@ -706,7 +706,6 @@ def calculate_weigenvalues(elist,n):
     graph_measures["LapDeparture"] = LapDeparture
     graph_measures["Condition"]=condition_number
     
-    
     return graph_measures
 
 
@@ -728,12 +727,49 @@ def calc_network_measures(SG,GS,GG,n):
     
     return STG_list,GTS_list,GTG_list, graph_measures
     
+def get_eigvecs(el,n):
+    A = np.zeros((n,n))
+    D = np.zeros((n,n))
+    for c in el:
+        A[c[0],c[1]] = -1
+
+    indegrees = [-np.sum(A[:,i]) for i in range(n)]
+
+    for i in range(n):
+        A[i,i]=indegrees[i]
+        D[i,i]=(1/indegrees[i]) if indegrees[i]>0 else 0
+
+    L = np.matmul(D,A)
+
+    w,v = np.linalg.eig(L)
+    
+    return w,v
+
+def complete_the_graph(el,n):
+    w,v=get_eigvecs(el,n)
+    
+    indices=[x for x in np.nonzero(w<1e-9)[0]]
+    components = []
+    for i in indices:
+        components.append([a for a in np.nonzero(v[:,i])[0]] )
+
+    additional_el=[]
+    lc=len(components)
+    if lc>1:
+        for c in range(0,lc-1):
+            frm = np.random.choice(components[c])
+            to = np.random.choice(components[c+1])
+            additional_el.append([frm,to]) 
+            additional_el.append([to,frm]) 
+
+    return additional_el
 
 def SG_SBlock(n,k,p,r=1):
 
     STG_list,GTS_list = get_partial_reciprocal(SBlock(n,k,p),n,recip=r)
  
     GTG_list = set_reciprocal(SBlock(n,k,p),n,r)
+    GTG_list +=complete_the_graph(GTG_list,n)
 
     return calc_network_measures(STG_list,GTS_list,GTG_list,n)
 
@@ -749,6 +785,7 @@ def SG_ExponentialSpatial(n,k,p=0.1,r=1):
     STG_list,GTS_list = get_partial_reciprocal(ExponentialSpatial(n,k,p,distxy),n,recip=r)
   
     GTG_list = set_reciprocal(ExponentialSpatialReciprocal(n,k,p,distyy),n,r)
+    GTG_list +=complete_the_graph(GTG_list,n)
 
     return calc_network_measures(STG_list,GTS_list,GTG_list,n)
 
@@ -769,6 +806,7 @@ def SG_Regular(n,k,p=None,r=None):
         el2.append((e[1],e[0])  )
 
     GTG_list = set_reciprocal(el2,n,r)
+    GTG_list +=complete_the_graph(GTG_list,n)
 
     return calc_network_measures(STG_list,GTS_list,GTG_list,n)
     
@@ -777,6 +815,7 @@ def SG_ScaleFree(n,k,p,r=1):
     STG_list,GTS_list = get_partial_reciprocal(SGGS,n,recip=r, SF=True)
 
     GTG_list = set_reciprocal(scale_free_BA(n,k,alpha=p, reciprocal = True),n,r)
+    GTG_list +=complete_the_graph(GTG_list,n)
     
     return calc_network_measures(STG_list,GTS_list,GTG_list,n)
 
@@ -784,6 +823,7 @@ def SG_ScaleFree(n,k,p,r=1):
 def SG_SmallWorld(n,k,p,r=1):
     STG_list,GTS_list = get_partial_reciprocal(fastSW(n,k,p),n,recip=r)
     GTG_list = set_reciprocal(fastSW(n,k,p),n,r)
+    GTG_list +=complete_the_graph(GTG_list,n)
 
     return calc_network_measures(STG_list,GTS_list,GTG_list,n) 
 
@@ -813,16 +853,10 @@ def SG_SpatialImproved(n,k,p,r=1):
     distyy = distance_matrix(b,b,p=2) #distances between points y
     
     STG_list,GTS_list = get_partial_reciprocal(ImprovedSpatial(distxy,n,k,p),n,recip=r)
-    diameter = 0
-    count = 0
-    while (diameter==0):
-        if count>0:
-            print(f"Spatial generation failed, trying again. Count = {count}")
-        GTG_list = set_reciprocal(ImprovedSpatial(distyy,n,k,p,GG=True),n,r)
-        STG_list,GTS_list,GTG_list, graph_measures = calc_network_measures(STG_list,GTS_list,GTG_list,n)
-        diameter = graph_measures["diameter"]
-        if count>5:
-            break
+    GTG_list = set_reciprocal(ImprovedSpatial(distyy,n,k,p,GG=True),n,r)
+    GTG_list +=complete_the_graph(GTG_list,n)
+    
+    STG_list,GTS_list,GTG_list, graph_measures = calc_network_measures(STG_list,GTS_list,GTG_list,n)
         
     return STG_list,GTS_list,GTG_list, graph_measures
 

@@ -69,7 +69,7 @@ t = 1000/fs
 stimstrt = 100   
 pw = params["StimSites"] #pulse width?
 cbf = params["StimAmplitude"]
-num_to_stim = params['n']#params["StimSites"]
+num_to_stim = 0#params['n']#params["StimSites"]
 simtime = params["simtime"]
 stimstop=simtime
 
@@ -205,12 +205,12 @@ def AccuSave(data_dict):
 
 
 if params["Notebook"] == 1:
-    np.save("NotebookData.npy",np.array({"STN":STN,"GPe":GPe,"data":data_dict}))
+    np.save(f"B:\SimOutput\\NotebookData.npy",np.array({"STN":STN,"GPe":GPe,"data":data_dict}))
     AccuSave(data_dict)
 
 elif params["Notebook"] == 2:
-    np.save("NotebookData.npy",np.array({"STN":STN,"GPe":GPe,"data":data_dict}))
-    np.save("NotebookNetworkData.npy",np.array({"STG_list":STG_list,"GTS_list":GTS_list,"GTG_list":GTG_list,"graph_measures":graph_measures}))
+    np.save(f"B:\SimOutput\\NotebookData.npy",np.array({"STN":STN,"GPe":GPe,"data":data_dict}))
+    np.save(f"B:\SimOutput\\NotebookNetworkData.npy",np.array({"STG_list":STG_list,"GTS_list":GTS_list,"GTG_list":GTG_list,"graph_measures":graph_measures}))
     AccuSave(data_dict)
 else:
     initname =  ''.join('_{:.3f}'.format(params[x]) if type(params[x])==float else '_{:}'.format(params[x]) for x in params)
