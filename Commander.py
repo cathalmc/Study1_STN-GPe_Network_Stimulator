@@ -12,7 +12,11 @@ SimControllerMaster.params["name"] = "SG_July_NormSingle" ##### MAKE SURE NAME I
 SimControllerMaster.params["Network_type"] = sys.argv[3]
 SimControllerMaster.params["simtime"] = 5000
 
-tester = sys.argv[4]
+try:
+    tester = sys.argv[4]
+except:
+    tester = None
+    
 testrun=False
 if tester=="tester":
     testrun=True
