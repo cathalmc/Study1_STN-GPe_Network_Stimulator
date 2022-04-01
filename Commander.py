@@ -29,9 +29,8 @@ ps = {"ImprovedSpatial": np.linspace(0,6,1000),
         "Regular": 0,}
 
 
-run_list=ps[SimControllerMaster.params["Network_type"]]
+torun=ps[SimControllerMaster.params["Network_type"]]
 
-torun=[]
 
 #replicates = 20
 #torun=np.array([kv for _ in range(replicates) for kv in run_list ],dtype=int) 
