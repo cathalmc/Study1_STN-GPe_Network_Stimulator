@@ -67,6 +67,9 @@ for d in torun:
     SimControllerActual.params["p"] = d["p"]
     SimControllerActual.params["StimSites"] = d["tostim"]
     
+    SimControllerActual.params["StimAmplitude"] = 15
+    SimControllerActual.params["StimFrequency"] = 140
+
     SimControllerActual.params["weight"] = 0
     SimControllerActual.params["GSweight"] = 0
     SimControllerActual.params["GGweight"] = 0
