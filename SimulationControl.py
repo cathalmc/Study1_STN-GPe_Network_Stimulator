@@ -35,8 +35,8 @@ class SimControl():
                 "h":0.01,
                 "Notebook":0,
                 "StimSites":0,
-                "StimAmplitude":0,
-                "StimFrequency":1,
+                "StimAmplitude":15,
+                "StimFrequency":140,
                 
                 }
                 
