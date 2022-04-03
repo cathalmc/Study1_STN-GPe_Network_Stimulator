@@ -10,7 +10,7 @@ t0 = time.time()
 
 SimControllerMaster.params["name"] = "SG_July_NormSingle" ##### MAKE SURE NAME IS A SINGLE CONTINUOUS STRING SO SUBMITTER DOESNT GET CONFUSED
 SimControllerMaster.params["Network_type"] = sys.argv[3]
-SimControllerMaster.params["simtime"] = 5000
+SimControllerMaster.params["simtime"] = 3000
 
 try:
     tester = sys.argv[4]
@@ -23,9 +23,10 @@ if tester=="tester":
     print("Validating")
 
 SimControllerMaster.params["recip"] = 1
-SimControllerMaster.params["n"] = 500
+SimControllerMaster.params["n"] = 200
 SimControllerMaster.params["k"] = 10
 SimControllerMaster.params["h"] = 0.02
+SimControllerMaster.params["p"] = 2
 
 #SimControllerMaster.params["p"] = 1
 
@@ -39,10 +40,11 @@ ps = {"ImprovedSpatial": np.linspace(0,6,1000),
 
 
 torun=ps[SimControllerMaster.params["Network_type"]]
+torun=np.arange(0,200,40)
 
 
-#replicates = 20
-#torun=np.array([kv for _ in range(replicates) for kv in run_list ],dtype=int) 
+replicates = 5
+torun=np.array([kv for _ in range(replicates) for kv in torun ],dtype=int) 
 
 stride = int(sys.argv[1])
 core = int(sys.argv[2])
@@ -52,7 +54,7 @@ torun = torun[np.arange(int(core),len(torun),stride,dtype=int)]
 
 for d in torun:
     SimControllerActual = SimControl(SimControllerMaster) #copy constructor
-    SimControllerActual.params["p"] = d
+    SimControllerActual.params["StimSites"] = d
     
     #SimControllerActual.params["StimFrequency"] = d["StimFrequency"]
     #SimControllerActual.params["StimAmplitude"] = d["StimAmplitude"]

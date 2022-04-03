@@ -744,7 +744,28 @@ def get_eigvecs(el,n):
     w,v = np.linalg.eig(L)
     
     return w,v
+    
+def get_best_nodes(el,n,ind=1):
+    A = np.zeros((n,n))
+    D = np.zeros((n,n))
+    for c in el:
+        A[c[0],c[1]] = -1
+    indegrees = [-np.sum(A[:,i]) for i in range(n)]
 
+    for i in range(n):
+        A[i,i]=indegrees[i]
+        D[i,i]=(1/indegrees[i]) if indegrees[i]>0 else 0
+
+    L = np.matmul(D,A)
+
+    w,v = np.linalg.eig(L)
+    sortind = np.argsort(w)
+    vectouse =abs(v[sortind[ind],:]) #ind=1 is lam2, ind=-1 is lamN
+    
+    #return nodes in order of their largest contribution to the eigenvector corresponding to the ind (eg lam2) 
+    return np.flip(np.argsort(vectouse)) #largest to smallest 
+
+    
 def complete_the_graph(el,n):
     w,v=get_eigvecs(el,n)
     
@@ -856,9 +877,9 @@ def SG_SpatialImproved(n,k,p,r=1):
     GTG_list = set_reciprocal(ImprovedSpatial(distyy,n,k,p,GG=True),n,r)
     GTG_list +=complete_the_graph(GTG_list,n)
     
-    STG_list,GTS_list,GTG_list, graph_measures = calc_network_measures(STG_list,GTS_list,GTG_list,n)
+    #STG_list,GTS_list,GTG_list, graph_measures = 
         
-    return STG_list,GTS_list,GTG_list, graph_measures
+    return calc_network_measures(STG_list,GTS_list,GTG_list,n)
 
 
 
