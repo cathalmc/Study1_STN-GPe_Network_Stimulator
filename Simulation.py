@@ -67,8 +67,8 @@ fs=params["StimFrequency"]
 t = 1000/fs
 
 stimstrt = 100   
-pw = 0.25 #pulse width
-cbf = 5 #charge balance factor
+pw = 0.2 #pulse width
+cbf = 10 #charge balance factor
 num_to_stim = params["StimSites"]
 simtime = params["simtime"]
 stimstop=simtime
@@ -158,14 +158,15 @@ for i,cell in enumerate(GPe_cells):
     cell.inject(GPeNoise[i])
 
 if num_to_stim>0:
-    #all_edges = update_index(STG_list,0,n,0) + update_index(GTS_list,n,0,0) + update_index(GTG_list,n,n,0)
+    all_edges = update_index(STG_list,0,n,0) + update_index(GTS_list,n,0,0) + update_index(GTG_list,n,n,0)
     #to_stim = [i for i in get_best_nodes(all_edges,2*n,ind=1) if i<n]
-    #for i in range(num_to_stim):
-        #stimulate cell given by index
-    #    STN_cells[to_stim[i]].inject(cs3)
+    to_stim = [i for i in get_central_nodes(all_edges) if i<n]
+    for i in range(num_to_stim):
+        if i<len(to_stim)-1:
+            STN_cells[to_stim[i]].inject(cs3)
     
-    for cell in STN_cells[np.random.choice(n,num_to_stim,replace=False)]:
-        cell.inject(cs3)
+#    for cell in STN_cells[np.random.choice(n,num_to_stim,replace=False)]:
+#        cell.inject(cs3)
         
 ### Recording
 STN_cells.record('spikes')

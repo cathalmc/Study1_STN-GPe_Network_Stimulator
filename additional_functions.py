@@ -727,23 +727,6 @@ def calc_network_measures(SG,GS,GG,n):
     
     return STG_list,GTS_list,GTG_list, graph_measures
     
-def get_eigvecs(el,n):
-    A = np.zeros((n,n))
-    D = np.zeros((n,n))
-    for c in el:
-        A[c[0],c[1]] = -1
-
-    indegrees = [-np.sum(A[:,i]) for i in range(n)]
-
-    for i in range(n):
-        A[i,i]=indegrees[i]
-        D[i,i]=(1/indegrees[i]) if indegrees[i]>0 else 0
-
-    L = np.matmul(D,A)
-
-    w,v = np.linalg.eig(L)
-    
-    return w,v
     
 def get_best_nodes(el,n,ind=1):
     A = np.zeros((n,n))
@@ -764,7 +747,24 @@ def get_best_nodes(el,n,ind=1):
     
     #return nodes in order of their largest contribution to the eigenvector corresponding to the ind (eg lam2) 
     return np.flip(np.argsort(vectouse)) #largest to smallest 
+    
+def get_eigvecs(el,n):
+    A = np.zeros((n,n))
+    D = np.zeros((n,n))
+    for c in el:
+        A[c[0],c[1]] = -1
 
+    indegrees = [-np.sum(A[:,i]) for i in range(n)]
+
+    for i in range(n):
+        A[i,i]=indegrees[i]
+        D[i,i]=(1/indegrees[i]) if indegrees[i]>0 else 0
+
+    L = np.matmul(D,A)
+
+    w,v = np.linalg.eig(L)
+    
+    return w,v
     
 def complete_the_graph(el,n):
     w,v=get_eigvecs(el,n)
@@ -784,13 +784,30 @@ def complete_the_graph(el,n):
             additional_el.append([to,frm]) 
 
     return additional_el
-
+    
+def CompleteSG(STG_ls,GTS_ls,GTG_ls,n):
+    all_edges = update_index(STG_ls,0,n,0) + update_index(GTS_ls,n,0,0) + update_index(GTG_ls,n,n,0)
+    completing_edges = complete_the_graph(all_edges,2*n)
+    for e in completing_edges:
+        if e[0]<n:
+            if e[1]>=n:
+                STG_ls.append((e[0],e[1]%n))
+            
+        else:
+            e2= e[1]
+            if e2<n:
+                GTS_ls.append( (e[0]%n,e[1])  )
+            else:
+                GTG_ls.append( (e[0]%n,e[1]%n)  )
+                
 def SG_SBlock(n,k,p,r=1):
 
     STG_list,GTS_list = get_partial_reciprocal(SBlock(n,k,p),n,recip=r)
  
     GTG_list = set_reciprocal(SBlock(n,k,p),n,r)
     GTG_list +=complete_the_graph(GTG_list,n)
+    
+    CompleteSG(STG_list,GTS_list,GTG_list,n)
 
     return calc_network_measures(STG_list,GTS_list,GTG_list,n)
 
@@ -807,6 +824,7 @@ def SG_ExponentialSpatial(n,k,p=0.1,r=1):
   
     GTG_list = set_reciprocal(ExponentialSpatialReciprocal(n,k,p,distyy),n,r)
     GTG_list +=complete_the_graph(GTG_list,n)
+    CompleteSG(STG_list,GTS_list,GTG_list,n)
 
     return calc_network_measures(STG_list,GTS_list,GTG_list,n)
 
@@ -837,6 +855,7 @@ def SG_ScaleFree(n,k,p,r=1):
 
     GTG_list = set_reciprocal(scale_free_BA(n,k,alpha=p, reciprocal = True),n,r)
     GTG_list +=complete_the_graph(GTG_list,n)
+    CompleteSG(STG_list,GTS_list,GTG_list,n)
     
     return calc_network_measures(STG_list,GTS_list,GTG_list,n)
 
@@ -845,46 +864,74 @@ def SG_SmallWorld(n,k,p,r=1):
     STG_list,GTS_list = get_partial_reciprocal(fastSW(n,k,p),n,recip=r)
     GTG_list = set_reciprocal(fastSW(n,k,p),n,r)
     GTG_list +=complete_the_graph(GTG_list,n)
+    CompleteSG(STG_list,GTS_list,GTG_list,n)
 
     return calc_network_measures(STG_list,GTS_list,GTG_list,n) 
 
-
 def ImprovedSpatial(dist,n,k,p,GG=False):
     if GG:
-        np.fill_diagonal(dist,0)
-    
-    w = dist.reshape(-1)
-    x = sorted(w,reverse=True)
-    y = np.arange(len(x))/(len(x))#
-    z = y**np.exp(p)
-    chosen = np.random.choice(x,n*k,replace=False,p=z/sum(z))
+        dist = np.triu(dist)
+        k= k if k<(n/2) else (n-1)/2
+
+    w = dist.reshape(-1) #unroll the distance matrix
+    #w[w==0]=1 #zero valued things should have no probability of being selected 
+    w2 = w[w>0] #remove zero valued things from list 
+
+    x = np.array(sorted(w2,reverse=False)) #sort array from small to large
+    y = np.arange(len(x))/(len(x)) #x axis for probability function
+    z = 1e-4+((1-y)**(p**2)) #probability of being selected, + some offset to account for 
+
+    assert len(w2)>= n*k
+
+    chosen = np.random.choice(x,int(n*k),replace=False,p=z/sum(z))
     indices=[]
     for i in chosen:
         indices.append(np.argwhere(w==i)[0][0])
-    el = [(int(d/n), d%n) for d in indices]
-    
-    return el
+    el = [(int(d/n), d%n) for d in indices] #convert indicies to unrolled distance matrix back to edges
+
+    assert len(list(set(el)))==len(el) #duplicate edges
+
+    if GG:
+        assert [e for e in el if e[0]==e[1]]==[] #self edges
+
+    return el 
 
 def SG_SpatialImproved(n,k,p,r=1):
     dim = 2
-    a = np.random.uniform(0,1,size = [n,dim])
-    b = np.random.uniform(0,1,size = [n,dim])
+    flag = 1
+    count=0
+    while(flag):
+        if count>0:
+            print("Repeating spatial")
+        a = np.random.uniform(0,1,size = [n,dim])
+        b = np.random.uniform(0,1,size = [n,dim])
 
-    distxy = distance_matrix(a,b,p=2) #distances from points x to points y
-    distyy = distance_matrix(b,b,p=2) #distances between points y
-    
-    STG_list,GTS_list = get_partial_reciprocal(ImprovedSpatial(distxy,n,k,p),n,recip=r)
-    GTG_list = set_reciprocal(ImprovedSpatial(distyy,n,k,p,GG=True),n,r)
-    GTG_list +=complete_the_graph(GTG_list,n)
-    
-    #STG_list,GTS_list,GTG_list, graph_measures = 
+        distxy = distance_matrix(a,b,p=2) #distances from points x to points y
+        distyy = distance_matrix(b,b,p=2) #distances between points y
+
+        STG_list,GTS_list = get_partial_reciprocal(ImprovedSpatial(distxy,n,k,p),n,recip=r)
+
+        GTG_list = set_reciprocal(ImprovedSpatial(distyy,n,k/2,p,GG=True),n,r)    
+        GTG_list +=complete_the_graph(GTG_list,n)
+        CompleteSG(STG_list,GTS_list,GTG_list,n)
+        STG_list,GTS_list,GTG_list, graph_measures = calc_network_measures(STG_list,GTS_list,GTG_list,n)
+
+        eigs = sorted([i.real for i in graph_measures['eigs']])
+        Lam2 = eigs[1]
+        if (Lam2>1e-12) or (count>3):
+            flag=0
         
-    return calc_network_measures(STG_list,GTS_list,GTG_list,n)
+        count+=1
+    
+    return STG_list,GTS_list,GTG_list, graph_measures
 
 
-
-
-  
+def get_central_nodes(el):
+    G = nx.Graph()
+    G.add_edges_from([(e[0],e[1]) for e in el])
+    centrality = nx.eigenvector_centrality(G)
+    to_stim = [d[1] for d in sorted([(c,v) for v,c in centrality.items()],reverse=True)]
+    return to_stim
 
 def fill_dict(STNdata,GPedata,dt,simtime,currents = True):
     low_cutoff = int(500/dt) #number of segments corresponding to first 500ms
