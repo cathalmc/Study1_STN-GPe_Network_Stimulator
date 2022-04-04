@@ -164,6 +164,7 @@ if num_to_stim>0:
     #for i in range(num_to_stim):
     #    if i<len(to_stim)-1:
     #        STN_cells[to_stim[i]].inject(cs3)
+    #
     
     for cell in STN_cells[np.random.choice(n,num_to_stim,replace=False)]:
         cell.inject(cs3)
