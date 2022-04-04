@@ -23,8 +23,8 @@ if tester=="tester":
     print("Validating")
 
 SimControllerMaster.params["recip"] = 1
-SimControllerMaster.params["n"] = 200
-SimControllerMaster.params["k"] = 8
+SimControllerMaster.params["n"] = 500
+SimControllerMaster.params["k"] = 10
 SimControllerMaster.params["h"] = 0.02
 
 
@@ -39,20 +39,20 @@ ps = {"ImprovedSpatial": np.linspace(0,6,1000),
 psC = {"ImprovedSpatial": 3,
     "Small_world":2e-3,
         "Scale_free": 1, 
-        "SBlock": 1-(1e-3),
+        "SBlock": 1-(2e-2),
         "Regular": 0,}
         
 SimControllerMaster.params["p"] = psC[sys.argv[3]]
 
 #torun=ps[SimControllerMaster.params["Network_type"]]
-torun=np.arange(0,201,5)
+torun=np.arange(0,501,10)
 
-replicates = 1
+replicates = 5
 torun2=np.array([kv for _ in range(replicates) for kv in torun ],dtype=int) 
 
 torun = []
 for v in torun2:
-    for net in ["ImprovedSpatial"]:#,"Small_world","Scale_free", "SBlock","Regular"]:
+    for net in [sys.argv[3]]:#,"Small_world","Scale_free", "SBlock","Regular"]:
         torun.append( {"net":net,"p":psC[net],"tostim":v}) 
 
 stride = int(sys.argv[1])
