@@ -43,9 +43,9 @@ psC = {"ImprovedSpatial": 3,
 SimControllerMaster.params["p"] = psC[sys.argv[3]]
 
 #torun=ps[SimControllerMaster.params["Network_type"]]
-torun=np.arange(0,501,10)
+torun=np.arange(0,501,5)
 
-replicates = 1
+replicates = 10
 torun2=np.array([kv for _ in range(replicates) for kv in torun ],dtype=int) 
 
 torun = []
