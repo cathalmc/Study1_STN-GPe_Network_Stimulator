@@ -10,7 +10,7 @@ t0 = time.time()
 
 SimControllerMaster.params["name"] = "SG_July_NormSingle" ##### MAKE SURE NAME IS A SINGLE CONTINUOUS STRING SO SUBMITTER DOESNT GET CONFUSED
 SimControllerMaster.params["Network_type"] = sys.argv[3]
-SimControllerMaster.params["simtime"] = 10000
+SimControllerMaster.params["simtime"] = 3000
 
 try:
     tester = sys.argv[4]
@@ -25,10 +25,8 @@ if tester=="tester":
 SimControllerMaster.params["recip"] = 1
 SimControllerMaster.params["n"] = 500
 SimControllerMaster.params["k"] = 10
-SimControllerMaster.params["h"] = 0.01
+SimControllerMaster.params["h"] = 0.02
 
-
-      
 #SimControllerMaster.params["p"] = ps[nt]    
 ps = {"ImprovedSpatial": np.linspace(0,10,1000),
     "Small_world":np.geomspace(1e-4,1,1000) ,
@@ -44,7 +42,8 @@ psC = {"ImprovedSpatial": 3,
         
 SimControllerMaster.params["p"] = psC[sys.argv[3]]
 
-torun=ps[SimControllerMaster.params["Network_type"]]
+#torun=ps[SimControllerMaster.params["Network_type"]]
+torun=np.arange(0,501,10)
 
 replicates = 1
 torun2=np.array([kv for _ in range(replicates) for kv in torun ],dtype=int) 
@@ -52,7 +51,7 @@ torun2=np.array([kv for _ in range(replicates) for kv in torun ],dtype=int)
 torun = []
 for v in torun2:
     for net in [sys.argv[3]]:#,"Small_world","Scale_free", "SBlock","Regular"]:
-        torun.append( {"net":net,"p":v,"tostim":0}) 
+        torun.append( {"net":net,"p":psC[net],"tostim":v}) 
 
 stride = int(sys.argv[1])
 core = int(sys.argv[2])
