@@ -67,7 +67,7 @@ fs=params["StimFrequency"]
 t = 1000/fs
 
 stimstrt = 100   
-pw = 0.2 #pulse width
+pw = 0.05 #pulse width
 cbf = 10 #charge balance factor
 num_to_stim = params["StimSites"]
 simtime = params["simtime"]

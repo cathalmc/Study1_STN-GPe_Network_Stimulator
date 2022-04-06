@@ -25,7 +25,7 @@ if tester=="tester":
 SimControllerMaster.params["recip"] = 1
 SimControllerMaster.params["n"] = 500
 SimControllerMaster.params["k"] = 10
-SimControllerMaster.params["h"] = 0.02
+SimControllerMaster.params["h"] = 0.005
 
 #SimControllerMaster.params["p"] = ps[nt]    
 ps = {"ImprovedSpatial": np.linspace(0,10,1000),
@@ -43,9 +43,9 @@ psC = {"ImprovedSpatial": 3,
 SimControllerMaster.params["p"] = psC[sys.argv[3]]
 
 #torun=ps[SimControllerMaster.params["Network_type"]]
-torun=np.arange(0,501,10)
+torun=np.arange(0,501,20)
 
-replicates = 5
+replicates = 2
 torun2=np.array([kv for _ in range(replicates) for kv in torun ],dtype=int) 
 
 torun = []
@@ -65,7 +65,7 @@ for d in torun:
     SimControllerActual.params["p"] = d["p"]
     SimControllerActual.params["StimSites"] = d["tostim"]
     
-    SimControllerActual.params["StimAmplitude"] = 15
+    SimControllerActual.params["StimAmplitude"] = 80
     SimControllerActual.params["StimFrequency"] = 140
 
     SimControllerActual.params["weight"] = 0
