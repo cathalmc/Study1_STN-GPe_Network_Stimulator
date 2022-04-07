@@ -100,6 +100,26 @@ if params["StimSites"]>0:
     y = [amp*cdb(i) for i in range(len(x))]
     cs3 = sim.StepCurrentSource(times=x, amplitudes = y)
 
+################################################################################################
+################################################################################################
+####Possibly remove
+
+LFS = lambda x: [-1,1,0][x%3]
+LFS_decider = lambda x,n: int(4*x/n)
+
+npw=15 #pulse width
+namp=0.5 #amplitude
+
+LFS_stims = []
+for toff in [0,12.5,25,37.5]: #1/4 of ts=50=1000/(f=20)
+    x = sorted(np.arange(100+toff,simtime,50).tolist()+np.arange(100+toff+npw,simtime,50).tolist()+np.arange(100+toff+2*npw,simtime,50).tolist())
+    y = [namp*LFS(i) for i in range(len(x))]
+    LFS_stims.append(sim.StepCurrentSource(times=x, amplitudes = y))
+    
+################################################################################################
+################################################################################################
+
+
 
 if not(params["Network_type"]=="Stochastic_block"):
     k = int(k)
@@ -148,10 +168,13 @@ prj_CTXSTN = sim.Projection(CTX_Pop, STN_cells, sim.FixedNumberPreConnector(conv
 
 STNNoise = [sim.NoisyCurrentSource(mean=0, stdev = 0.05, start=0,stop =simtime,dt=1.0) for i in range(n)] #was 20*dt which was usually .6ms
 GPeNoise = [sim.NoisyCurrentSource(mean=0, stdev = 0.05, start=0,stop =simtime,dt=1.0) for i in range(n)]
-
+if (amp==1) and (num_to_stim==0):
+    print("Subtle Desynchronisation")
 
 for i,cell in enumerate(STN_cells):
     cell.inject(STNNoise[i])
+    if (amp==1) and (num_to_stim==0):
+        cell.inject(LFS_stims[LFS_decider(i,n)])
     
 
 for i,cell in enumerate(GPe_cells):

@@ -25,10 +25,10 @@ if tester=="tester":
 SimControllerMaster.params["recip"] = 1
 SimControllerMaster.params["n"] = 500
 SimControllerMaster.params["k"] = 10
-SimControllerMaster.params["h"] = 0.005
+SimControllerMaster.params["h"] = 0.03
 
 #SimControllerMaster.params["p"] = ps[nt]    
-ps = {"ImprovedSpatial": np.linspace(0,10,1000),
+ps = {"ImprovedSpatial": np.linspace(0,8.5,1000),
     "Small_world":np.geomspace(1e-4,1,1000) ,
         "Scale_free": np.linspace(1e-4,4,1000), 
         "SBlock": 1-np.geomspace(1e-4,1,1000),
@@ -40,18 +40,15 @@ psC = {"ImprovedSpatial": 3,
         "SBlock": 1-(2e-2),
         "Regular": 0,}
         
-SimControllerMaster.params["p"] = psC[sys.argv[3]]
 
-#torun=ps[SimControllerMaster.params["Network_type"]]
-torun=np.arange(0,501,20)
 
-replicates = 2
-torun2=np.array([kv for _ in range(replicates) for kv in torun ],dtype=int) 
+replicates = 1
+torun2=np.array([kv for _ in range(replicates) for kv in ps[SimControllerMaster.params["Network_type"]]]) 
 
 torun = []
 for v in torun2:
     for net in [sys.argv[3]]:#,"Small_world","Scale_free", "SBlock","Regular"]:
-        torun.append( {"net":net,"p":psC[net],"tostim":v}) 
+        torun.append( {"net":net,"p":v,"tostim":0}) 
 
 stride = int(sys.argv[1])
 core = int(sys.argv[2])
@@ -65,7 +62,7 @@ for d in torun:
     SimControllerActual.params["p"] = d["p"]
     SimControllerActual.params["StimSites"] = d["tostim"]
     
-    SimControllerActual.params["StimAmplitude"] = 80
+    SimControllerActual.params["StimAmplitude"] = 1 #80
     SimControllerActual.params["StimFrequency"] = 140
 
     SimControllerActual.params["weight"] = 0

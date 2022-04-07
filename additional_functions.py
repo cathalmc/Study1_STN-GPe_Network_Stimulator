@@ -845,7 +845,7 @@ def SG_Regular(n,k,p=None,r=None):
         el2.append((e[1],e[0])  )
 
     GTG_list = set_reciprocal(el2,n,r)
-    GTG_list +=complete_the_graph(GTG_list,n)
+    #GTG_list +=complete_the_graph(GTG_list,n)
 
     return calc_network_measures(STG_list,GTS_list,GTG_list,n)
     
@@ -864,7 +864,7 @@ def SG_SmallWorld(n,k,p,r=1):
     STG_list,GTS_list = get_partial_reciprocal(fastSW(n,k,p),n,recip=r)
     GTG_list = set_reciprocal(fastSW(n,k,p),n,r)
     GTG_list +=complete_the_graph(GTG_list,n)
-    CompleteSG(STG_list,GTS_list,GTG_list,n)
+    #CompleteSG(STG_list,GTS_list,GTG_list,n)
 
     return calc_network_measures(STG_list,GTS_list,GTG_list,n) 
 
