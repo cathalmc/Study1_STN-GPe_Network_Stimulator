@@ -108,7 +108,7 @@ LFS = lambda x: [-1,1,0][x%3]
 LFS_decider = lambda x,n: int(4*x/n)
 
 npw=15 #pulse width
-namp=0.5 #amplitude
+namp=0.75 #amplitude
 
 LFS_stims = []
 for toff in [0,12.5,25,37.5]: #1/4 of ts=50=1000/(f=20)
