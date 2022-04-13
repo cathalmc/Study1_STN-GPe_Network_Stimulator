@@ -23,7 +23,7 @@ if tester=="tester":
     print("Validating")
 
 SimControllerMaster.params["recip"] = 1
-SimControllerMaster.params["n"] = 1000
+SimControllerMaster.params["n"] = 500
 SimControllerMaster.params["k"] = 10
 SimControllerMaster.params["h"] = 0.03
 
@@ -41,7 +41,7 @@ psC = {"ImprovedSpatial": 6,
         "Regular": 0,}
         
 
-max_k=500
+max_k=300
 kvals = list(set([int(i+0.5) for i in np.geomspace(2,max_k,max_k-1)])) #geometrically spaced values
 replicates = 2
 torun2=np.array([kv for _ in range(replicates) for kv in kvals]) 
