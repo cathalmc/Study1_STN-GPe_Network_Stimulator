@@ -985,6 +985,8 @@ def fill_dict(STNdata,GPedata,dt,simtime,currents = True):
              "GPe synchrony": Chi_Synchrony(GPedata.filter(name='soma(0.5).v')[0]),
              "SMean": np.mean(Smean),
              "GMean": np.mean(Gmean),
+             "SFRvar":np.std(Smean),
+             "GFRvar":np.std(Gmean),
              "STNk":KuramotoPhase(STNdata,simtime),
             "GPek":KuramotoPhase(GPedata, simtime),
             "SISIstd":Spike_CV(STNdata.spiketrains),
