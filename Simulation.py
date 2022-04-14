@@ -109,7 +109,7 @@ LFS_decider = lambda x,n: int(4*x/n)
 
 npw=15 #pulse width
 
-namp= max(0.75,2.2625-0.1375*k)
+namp= 0.75
 
 
 LFS_stims = []
