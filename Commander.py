@@ -10,7 +10,7 @@ t0 = time.time()
 
 SimControllerMaster.params["name"] = "SG_July_NormSingle" ##### MAKE SURE NAME IS A SINGLE CONTINUOUS STRING SO SUBMITTER DOESNT GET CONFUSED
 SimControllerMaster.params["Network_type"] = sys.argv[3]
-SimControllerMaster.params["simtime"] = 4000
+SimControllerMaster.params["simtime"] = 5000
 
 try:
     tester = sys.argv[4]
@@ -23,15 +23,15 @@ if tester=="tester":
     print("Validating")
 
 SimControllerMaster.params["recip"] = 1
-SimControllerMaster.params["n"] = 100
+SimControllerMaster.params["n"] = 500
 SimControllerMaster.params["k"] = 10
 SimControllerMaster.params["h"] = 0.03
 
 #SimControllerMaster.params["p"] = ps[nt]    
-ps = {"ImprovedSpatial": np.linspace(0.5,10,200),#np.linspace(0,8.5,1000),
-    "Small_world":np.geomspace(3e-3,1,200),#np.geomspace(1e-4,1,1000) ,
-        "Scale_free": np.linspace(1e-4,4,200), 
-        "SBlock": 1-np.geomspace(8e-3,1,200),
+ps = {"ImprovedSpatial": np.linspace(0.5,10,1000),#np.linspace(0,8.5,1000),
+    "Small_world":np.geomspace(3e-3,1,1000),#np.geomspace(1e-4,1,1000) ,
+        "Scale_free": np.linspace(1e-4,4,1000), 
+        "SBlock": 1-np.geomspace(8e-3,1,1000),
         "Regular": 0,}
         
 psC = {"ImprovedSpatial": 6,
