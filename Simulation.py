@@ -109,10 +109,8 @@ LFS_decider = lambda x,n: int(4*x/n)
 
 npw=15 #pulse width
 
-if params["Network_type"] == "SBlock":
-    namp= max(0.75,2.2625-0.1375*k)
-else:
-    namp=0.75
+namp= max(0.75,2.2625-0.1375*k)
+
 
 LFS_stims = []
 for toff in [0,12.5,25,37.5]: #1/4 of ts=50=1000/(f=20)
