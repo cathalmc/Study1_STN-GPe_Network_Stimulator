@@ -10,7 +10,7 @@ t0 = time.time()
 
 SimControllerMaster.params["name"] = "SG_July_NormSingle" ##### MAKE SURE NAME IS A SINGLE CONTINUOUS STRING SO SUBMITTER DOESNT GET CONFUSED
 SimControllerMaster.params["Network_type"] = sys.argv[3]
-SimControllerMaster.params["simtime"] = 5000
+SimControllerMaster.params["simtime"] = 4000
 
 try:
     tester = sys.argv[4]
@@ -28,10 +28,10 @@ SimControllerMaster.params["k"] = 10
 SimControllerMaster.params["h"] = 0.03
 
 #SimControllerMaster.params["p"] = ps[nt]    
-ps = {"ImprovedSpatial": np.linspace(0.5,10,1000),#np.linspace(0,8.5,1000),
-    "Small_world":np.geomspace(3e-3,1,1000),#np.geomspace(1e-4,1,1000) ,
-        "Scale_free": np.linspace(1e-4,4,1000), 
-        "SBlock": 1-np.geomspace(8e-3,1,1000),
+ps = {"ImprovedSpatial": np.linspace(0.5,10,200),#np.linspace(0,8.5,1000),
+    "Small_world":np.geomspace(3e-3,1,200),#np.geomspace(1e-4,1,1000) ,
+        "Scale_free": np.linspace(1e-4,4,200), 
+        "SBlock": 1-np.geomspace(8e-3,1,200),
         "Regular": 0,}
         
 psC = {"ImprovedSpatial": 6,
@@ -41,15 +41,11 @@ psC = {"ImprovedSpatial": 6,
         "Regular": 0,}
         
 
-max_k=25
-kvals = list(set([int(i+0.5) for i in np.geomspace(2,max_k,max_k-1)])) #geometrically spaced values
-replicates = 4
-torun2=np.array([kv for _ in range(replicates) for kv in kvals]) 
-
+torun2 = ps[sys.argv[3]]
 torun = []
 for v in torun2:
     for net in [sys.argv[3]]:#,"Small_world","Scale_free", "SBlock","Regular"]:
-        torun.append( {"net":net,"p":psC[net],"k":v}) 
+        torun.append( {"net":net,"p":v,"k":10}) 
 
 stride = int(sys.argv[1])
 core = int(sys.argv[2])
@@ -100,4 +96,9 @@ print("Total Time taken {:.3f}".format(t1-t0))
 #        for k in [0.02,0.1,0.2,0.5,1.0,2.0]:
 #            torun.append({"StimFrequency":i,"StimAmplitude":j,"StimSites":k})
 #torun=np.array(torun)
+
+#max_k=25
+#kvals = list(set([int(i+0.5) for i in np.geomspace(2,max_k,max_k-1)])) #geometrically spaced values
+#replicates = 4
+#torun2=np.array([kv for _ in range(replicates) for kv in kvals]) 
 
