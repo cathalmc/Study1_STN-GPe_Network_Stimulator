@@ -41,7 +41,7 @@ psC = {"ImprovedSpatial": 6,
         "Regular": 0,}
         
 
-max_k=90
+max_k=25
 kvals = list(set([int(i+0.5) for i in np.geomspace(2,max_k,max_k-1)])) #geometrically spaced values
 replicates = 4
 torun2=np.array([kv for _ in range(replicates) for kv in kvals]) 
