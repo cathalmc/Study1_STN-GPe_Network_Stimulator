@@ -648,9 +648,9 @@ def GSw(k):
 ####################### MAJOR CHANGE
 def GGw(k):
     if k<4:
-            return 0.0001
-        else:
-            return RP(k,[ 2.83192098e-03,  6.66722093e-04,  5.73021456e-06, -8.26724709e-02,4.37348226e-03])
+        return 0.0001
+    else:
+        return RP(k,[ 2.83192098e-03,  6.66722093e-04,  5.73021456e-06, -8.26724709e-02,4.37348226e-03])
 
 def weight_list_pynn_direct(el,wf,n):
     weight = get_degree(el,1,n,rtn=True)
