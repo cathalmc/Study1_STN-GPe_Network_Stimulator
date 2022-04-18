@@ -890,7 +890,7 @@ def ImprovedSpatial(dist,n,k,p,GG=False):
     chosen = np.random.choice(x,int(n*k),replace=False,p=z/sum(z))
     indices=[]
     for i in chosen:
-        indices.append(np.argwhere(w==i)[0][0])
+        indices.append(np.argwhere(w==i)[0][0]) #does this assume distances are unique?
     el = [(int(d/n), d%n) for d in indices] #convert indicies to unrolled distance matrix back to edges
 
     assert len(list(set(el)))==len(el) #duplicate edges
