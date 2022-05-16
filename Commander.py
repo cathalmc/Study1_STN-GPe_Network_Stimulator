@@ -27,11 +27,11 @@ SimControllerMaster.params["n"] = 500
 SimControllerMaster.params["k"] = 20
 SimControllerMaster.params["h"] = 0.03
 
-#SimControllerMaster.params["p"] = ps[nt]    
-ps = {"ImprovedSpatial": np.linspace(0.5,15,500),#np.linspace(0,8.5,1000),
-    "Small_world":np.geomspace(1e-3,1,500),#np.geomspace(1e-4,1,1000) ,
-        "Scale_free": np.linspace(1e-4,4,500), 
-        "SBlock": 1-np.geomspace(1e-3,1,500),
+nitit=200  
+ps = {"ImprovedSpatial": np.linspace(0.5,15,nitit),#np.linspace(0,8.5,1000),
+    "Small_world":np.geomspace(1e-3,1,nitit),#np.geomspace(1e-4,1,1000) ,
+        "Scale_free": np.linspace(1e-4,4,nitit), 
+        "SBlock": 1-np.geomspace(1e-3,1,nitit),
         "Regular": 0,}
         
 psC = {"ImprovedSpatial": 6,
