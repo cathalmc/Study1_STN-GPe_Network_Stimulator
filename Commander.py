@@ -10,7 +10,7 @@ t0 = time.time()
 
 SimControllerMaster.params["name"] = "SG_July_NormSingle" ##### MAKE SURE NAME IS A SINGLE CONTINUOUS STRING SO SUBMITTER DOESNT GET CONFUSED
 SimControllerMaster.params["Network_type"] = sys.argv[3]
-SimControllerMaster.params["simtime"] = 5500
+SimControllerMaster.params["simtime"] = 4000
 
 try:
     tester = sys.argv[4]
@@ -24,14 +24,14 @@ if tester=="tester":
 
 SimControllerMaster.params["recip"] = 1
 SimControllerMaster.params["n"] = 500
-SimControllerMaster.params["k"] = 10
+SimControllerMaster.params["k"] = 20
 SimControllerMaster.params["h"] = 0.03
 
 #SimControllerMaster.params["p"] = ps[nt]    
-ps = {"ImprovedSpatial": np.linspace(0.5,20,300),#np.linspace(0,8.5,1000),
-    "Small_world":np.geomspace(3e-3,1,1000),#np.geomspace(1e-4,1,1000) ,
-        "Scale_free": np.linspace(1e-4,4,1000), 
-        "SBlock": 1-np.geomspace(8e-3,1,1000),
+ps = {"ImprovedSpatial": np.linspace(0.5,15,500),#np.linspace(0,8.5,1000),
+    "Small_world":np.geomspace(1e-3,1,500),#np.geomspace(1e-4,1,1000) ,
+        "Scale_free": np.linspace(1e-4,4,500), 
+        "SBlock": 1-np.geomspace(1e-3,1,500),
         "Regular": 0,}
         
 psC = {"ImprovedSpatial": 6,
@@ -45,7 +45,7 @@ torun2 = ps[sys.argv[3]]
 torun = []
 for v in torun2:
     for net in [sys.argv[3]]:#,"Small_world","Scale_free", "SBlock","Regular"]:
-        torun.append( {"net":net,"p":v,"k":10}) 
+        torun.append( {"net":net,"p":v,"k":20}) 
 
 stride = int(sys.argv[1])
 core = int(sys.argv[2])
