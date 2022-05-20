@@ -10,7 +10,7 @@ t0 = time.time()
 
 SimControllerMaster.params["name"] = "SG_July_NormSingle" ##### MAKE SURE NAME IS A SINGLE CONTINUOUS STRING SO SUBMITTER DOESNT GET CONFUSED
 SimControllerMaster.params["Network_type"] = sys.argv[3]
-SimControllerMaster.params["simtime"] = 4000
+SimControllerMaster.params["simtime"] = 5500
 
 try:
     tester = sys.argv[4]
@@ -25,7 +25,7 @@ if tester=="tester":
 SimControllerMaster.params["recip"] = 1
 SimControllerMaster.params["n"] = 100
 #SimControllerMaster.params["k"] = 20
-SimControllerMaster.params["h"] = 0.03
+SimControllerMaster.params["h"] = 0.01
 
 nitit=200  
 ps = {"ImprovedSpatial": np.linspace(0.5,15,nitit),#np.linspace(0,8.5,1000),
@@ -40,12 +40,15 @@ psC = {"ImprovedSpatial": 7,
         "SBlock": 1-(1e-2),
         "Regular": 0,}
         
-replicates = 1
+replicates = 2
 
-max_k = 70
+max_k = {100:90,500:350,1000:500}[SimControllerMaster.params["n"]]
 
 kvals= list(set([int(i+0.5) for i in np.geomspace(2,max_k,max_k-1)])) #geometrically spaced values
-torun2 = np.array([kv for _ in range(replicates) for kv in kvals ],dtype=int) #add in replicates
+torun2 = [kv for _ in range(replicates) for kv in kvals ] #add in replicates
+random.shuffle(torun2) #shuffle as a lazy way to balance load
+torun2 = np.array(torun2,dtype=int)
+
 torun = []
 
 for v in torun2:
