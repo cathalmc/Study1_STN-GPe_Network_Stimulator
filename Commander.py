@@ -42,14 +42,15 @@ psC = {"ImprovedSpatial": 7,
         
 replicates = 1
 
+max_k = 70
+
 kvals= list(set([int(i+0.5) for i in np.geomspace(2,max_k,max_k-1)])) #geometrically spaced values
-torun2 = =np.array([kv for _ in range(replicates) for kv in kvals ],dtype=int) #add in replicates
+torun2 = np.array([kv for _ in range(replicates) for kv in kvals ],dtype=int) #add in replicates
 torun = []
 
 for v in torun2:
     for net in [sys.argv[3]]:#,"Small_world","Scale_free", "SBlock","Regular"]:
         torun.append( {"net":net,"p":psC[net],"k":v}) 
-
 
 
 stride = int(sys.argv[1])
