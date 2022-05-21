@@ -23,7 +23,7 @@ if tester=="tester":
     print("Validating")
 
 SimControllerMaster.params["recip"] = 1
-SimControllerMaster.params["n"] = 500
+SimControllerMaster.params["n"] = 1000
 #SimControllerMaster.params["k"] = 20
 SimControllerMaster.params["h"] = 0.01
 
