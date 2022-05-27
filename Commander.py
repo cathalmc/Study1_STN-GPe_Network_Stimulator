@@ -25,7 +25,7 @@ if tester=="tester":
 SimControllerMaster.params["recip"] = 1
 SimControllerMaster.params["n"] = 500
 #SimControllerMaster.params["k"] = 20
-SimControllerMaster.params["h"] = 0.01
+SimControllerMaster.params["h"] = 0.02
 
 nitit=40 
 ps = {"ImprovedSpatial": np.linspace(0.5,10,nitit),#np.linspace(0,8.5,1000),
