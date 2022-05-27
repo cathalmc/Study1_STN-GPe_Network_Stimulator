@@ -23,12 +23,12 @@ if tester=="tester":
     print("Validating")
 
 SimControllerMaster.params["recip"] = 1
-SimControllerMaster.params["n"] = 1000
+SimControllerMaster.params["n"] = 500
 #SimControllerMaster.params["k"] = 20
 SimControllerMaster.params["h"] = 0.01
 
-nitit=200  
-ps = {"ImprovedSpatial": np.linspace(0.5,15,nitit),#np.linspace(0,8.5,1000),
+nitit=40 
+ps = {"ImprovedSpatial": np.linspace(0.5,10,nitit),#np.linspace(0,8.5,1000),
     "Small_world":np.geomspace(1e-3,1,nitit),#np.geomspace(1e-4,1,1000) ,
         "Scale_free": np.linspace(1e-4,4,nitit), 
         "SBlock": 1-np.geomspace(1e-3,1,nitit),
@@ -42,18 +42,13 @@ psC = {"ImprovedSpatial": 7,
         
 replicates = 2
 
-max_k = {100:90,500:350,1000:500}[SimControllerMaster.params["n"]]
 
-kvals= list(set([int(i+0.5) for i in np.geomspace(2,max_k,max_k-1)])) #geometrically spaced values
-torun2 = [kv for _ in range(replicates) for kv in kvals ] #add in replicates
-random.shuffle(torun2) #shuffle as a lazy way to balance load
-torun2 = np.array(torun2,dtype=int)
-
-torun = []
-
+net = sys.argv[3]
+torun2 = ps[net]
+torun =[]
 for v in torun2:
-    for net in [sys.argv[3]]:#,"Small_world","Scale_free", "SBlock","Regular"]:
-        torun.append( {"net":net,"p":psC[net],"k":v}) 
+    for r in [0,0.2,0.4,0.6,0.8,1.0]:
+        torun.append( {"net":net,"p":v,"r":r}) 
 
 
 stride = int(sys.argv[1])
@@ -66,7 +61,9 @@ for d in torun:
     SimControllerActual = SimControl(SimControllerMaster) #copy constructor
     SimControllerActual.params["Network_type"] = d["net"]
     SimControllerActual.params["p"] = d["p"]
-    SimControllerActual.params["k"] = d["k"]
+    SimControllerActual.params["recip"] = d["r"]
+    
+    SimControllerActual.params["k"] = 10
     SimControllerActual.params["StimSites"] = 0
     
     SimControllerActual.params["StimAmplitude"] = 1 #80
@@ -110,4 +107,4 @@ print("Total Time taken {:.3f}".format(t1-t0))
 #kvals = list(set([int(i+0.5) for i in np.geomspace(2,max_k,max_k-1)])) #geometrically spaced values
 #replicates = 4
 #torun2=np.array([kv for _ in range(replicates) for kv in kvals]) 
-
+#max_k = {100:90,500:350,1000:500}[SimControllerMaster.params["n"]]
