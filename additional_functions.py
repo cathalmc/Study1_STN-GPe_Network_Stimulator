@@ -204,7 +204,7 @@ def recreate_list(prj):
     
 
 def PoweratFreq(sig,freq,fs=1000/0.03):
-    #Calculate the power within +/- 4Hz of the freq for a given sig
+    #Calculate the power within +/- wid Hz of the freq for a given sig
     wid = 1.5
     try:
         assert freq-wid>0
@@ -213,7 +213,7 @@ def PoweratFreq(sig,freq,fs=1000/0.03):
     #calculate the PSD with welches method
     f,Pxx = signal.welch(sig-np.min(sig),fs,nperseg=int(len(sig)/4)) 
 
-    #get indices corresponding to frequencies in range freq-4<x<freq+4
+    #get indices corresponding to frequencies in range freq-wid<x<freq+wid
     indices = np.nonzero(np.logical_and(f>freq-wid,f<freq+wid)) 
     
     #get the change in frequencies
@@ -488,7 +488,7 @@ def get_degree(lst,ind,n,rtn=False):
     if rtn:
         return deglist.tolist()
     else:
-        plt.figure(figsize=(12,8))
+        plt.figure(figsize=(12,6))
         plt.bar(deglist[:,0],deglist[:,1] )
         
 
@@ -713,7 +713,7 @@ def calculate_weigenvalues(elist,n):
     return graph_measures
 
 
-def calc_network_measures(SG,GS,GG,n):
+def calc_network_measures(SG,GS,GG,n,dev=False):
     #Make the edgelists weighted
     #These edge lists will be used in the pynn simulation
     STG_list = weight_list_pynn_direct(SG,SGw,n) 
@@ -729,7 +729,10 @@ def calc_network_measures(SG,GS,GG,n):
     
     graph_measures = calculate_weigenvalues(all_normed_edges,2*n)
     
-    return STG_list,GTS_list,GTG_list, graph_measures
+    if dev:
+        return STG_list,GTS_list,GTG_list, graph_measures, all_normed_edges
+    else:
+        return STG_list,GTS_list,GTG_list, graph_measures
     
     
 def get_best_nodes(el,n,ind=1):
@@ -804,7 +807,7 @@ def CompleteSG(STG_ls,GTS_ls,GTG_ls,n):
             else:
                 GTG_ls.append( (e[0]%n,e[1]%n)  )
                 
-def SG_SBlock(n,k,p,r=1):
+def SG_SBlock(n,k,p,r=1,dev=False):
 
     STG_list,GTS_list = get_partial_reciprocal(SBlock(n,k,p),n,recip=r)
  
@@ -813,9 +816,9 @@ def SG_SBlock(n,k,p,r=1):
     
     CompleteSG(STG_list,GTS_list,GTG_list,n)
 
-    return calc_network_measures(STG_list,GTS_list,GTG_list,n)
+    return calc_network_measures(STG_list,GTS_list,GTG_list,n,dev)
 
-def SG_ExponentialSpatial(n,k,p=0.1,r=1):
+def SG_ExponentialSpatial(n,k,p=0.1,r=1,dev=False):
     ##ER random connections
     dim = 2
     a = np.random.uniform(0,1,size = [n,dim])
@@ -830,9 +833,9 @@ def SG_ExponentialSpatial(n,k,p=0.1,r=1):
     GTG_list +=complete_the_graph(GTG_list,n)
     CompleteSG(STG_list,GTS_list,GTG_list,n)
 
-    return calc_network_measures(STG_list,GTS_list,GTG_list,n)
+    return calc_network_measures(STG_list,GTS_list,GTG_list,n,dev)
 
-def SG_Regular(n,k,p=None,r=None):
+def SG_Regular(n,k,p=None,r=None,dev=False):
     r=1
     reg = nx.random_regular_graph(k,n)
 
@@ -851,9 +854,9 @@ def SG_Regular(n,k,p=None,r=None):
     GTG_list = set_reciprocal(el2,n,r)
     #GTG_list +=complete_the_graph(GTG_list,n)
 
-    return calc_network_measures(STG_list,GTS_list,GTG_list,n)
+    return calc_network_measures(STG_list,GTS_list,GTG_list,n,dev)
     
-def SG_ScaleFree(n,k,p,r=1):
+def SG_ScaleFree(n,k,p,r=1,dev=False):
     SGGS = scale_free_BA(n,k,alpha=p,reciprocal = False)
     STG_list,GTS_list = get_partial_reciprocal(SGGS,n,recip=r, SF=True)
 
@@ -861,18 +864,18 @@ def SG_ScaleFree(n,k,p,r=1):
     GTG_list +=complete_the_graph(GTG_list,n)
     CompleteSG(STG_list,GTS_list,GTG_list,n)
     
-    return calc_network_measures(STG_list,GTS_list,GTG_list,n)
+    return calc_network_measures(STG_list,GTS_list,GTG_list,n,dev)
 
    
-def SG_SmallWorld(n,k,p,r=1):
+def SG_SmallWorld(n,k,p,r=1,dev=False):
     STG_list,GTS_list = get_partial_reciprocal(fastSW(n,k,p),n,recip=r)
     GTG_list = set_reciprocal(fastSW(n,k,p),n,r)
     GTG_list +=complete_the_graph(GTG_list,n)
     #CompleteSG(STG_list,GTS_list,GTG_list,n)
 
-    return calc_network_measures(STG_list,GTS_list,GTG_list,n) 
+    return calc_network_measures(STG_list,GTS_list,GTG_list,n,dev) 
 
-def ImprovedSpatial(dist,n,k,p,GG=False):
+def ImprovedSpatial(dist,n,k,p,GG=False,dev=False):
     if GG:
         dist = np.triu(dist)
         k= k if k<(n/2) else (n-1)/2
@@ -900,7 +903,7 @@ def ImprovedSpatial(dist,n,k,p,GG=False):
 
     return el 
 
-def SG_SpatialImproved(n,k,p,r=1):
+def SG_SpatialImproved(n,k,p,r=1,dev=False):
     dim = 2
     flag = 1
     count=0
@@ -918,8 +921,10 @@ def SG_SpatialImproved(n,k,p,r=1):
         GTG_list = set_reciprocal(ImprovedSpatial(distyy,n,k/2,p,GG=True),n,r)    
         GTG_list +=complete_the_graph(GTG_list,n)
         CompleteSG(STG_list,GTS_list,GTG_list,n)
-        STG_list,GTS_list,GTG_list, graph_measures = calc_network_measures(STG_list,GTS_list,GTG_list,n)
-
+        if dev:
+            return calc_network_measures(STG_list,GTS_list,GTG_list,n,dev)
+        else:
+            STG_list,GTS_list,GTG_list, graph_measures = calc_network_measures(STG_list,GTS_list,GTG_list,n)
         eigs = sorted([i.real for i in graph_measures['eigs']])
         Lam2 = eigs[1]
         if (Lam2>1e-12) or (count>3):
