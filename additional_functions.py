@@ -307,6 +307,13 @@ def fast_ER4(n,k):
     z = random.sample(x,k*n)
     return z
 
+def SG_ER(n,k,p,r=1,dev=False):
+    STG_list,GTS_list = get_partial_reciprocal(fast_ER4(n,k),n,recip=r)
+    GTG_list = set_reciprocal(fast_ER4(n,k),n,r)
+    GTG_list +=complete_the_graph(GTG_list,n)
+    CompleteSG(STG_list,GTS_list,GTG_list,n)
+    return calc_network_measures(STG_list,GTS_list,GTG_list,n,dev)
+    
 
 
 def split(n):
