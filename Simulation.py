@@ -176,7 +176,7 @@ for i,cell in enumerate(GPe_cells):
     cell.inject(GPeNoise[i])
 
 if num_to_stim>0:
-    #node targeted stimulation
+    ##node targeted stimulation
     #all_edges = update_index(STG_list,0,n,0) + update_index(GTS_list,n,0,0) + update_index(GTG_list,n,n,0)
     #to_stim = [i for i in get_central_nodes(all_edges) if i<n]
     #for i in range(num_to_stim):
