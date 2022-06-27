@@ -34,7 +34,7 @@ ps = {"ImprovedSpatial": np.linspace(0.5,9,nitit),#np.linspace(0,8.5,1000),
         "SBlock": 1-np.geomspace(1e-3,1,nitit),
         "Regular": 0,}
         
-psC = {"ImprovedSpatial": 7,
+psC = {"ImprovedSpatial": 6,
     "Small_world":1e-3,
         "Scale_free": 1, 
         "SBlock": 1-(1e-2),
@@ -44,10 +44,20 @@ psC = {"ImprovedSpatial": 7,
 
 net = sys.argv[3]
 torun2 = ps[net]
+
+#for v in torun2:
+ #   for _ in range(2): #replicates
+ #       torun.append( {"net":net,"p":v,"r":None}) 
+
+max_k = {100:90,500:350,1000:500}[SimControllerMaster.params["n"]]
+kvals = list(set([int(i+0.5) for i in np.geomspace(2,max_k,max_k-1)])) #geometrically spaced values
+replicates = 2
+torun2=np.array([kv for _ in range(replicates) for kv in kvals]) 
+
 torun =[]
 for v in torun2:
     for _ in range(2): #replicates
-        torun.append( {"net":net,"p":v,"r":None}) 
+        torun.append( {"net":net,"k":v,"p":psC[net]}) 
 
 
 stride = int(sys.argv[1])
@@ -60,6 +70,7 @@ for d in torun:
     SimControllerActual = SimControl(SimControllerMaster) #copy constructor
     SimControllerActual.params["Network_type"] = d["net"]
     SimControllerActual.params["p"] = d["p"]
+    SimControllerActual.params["k"] = d["k"]
     #SimControllerActual.params["recip"] = d["r"]
     
     SimControllerActual.params["k"] = 10
