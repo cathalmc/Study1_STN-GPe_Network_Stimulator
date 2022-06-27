@@ -22,13 +22,13 @@ if tester=="tester":
     testrun=True
     print("Validating")
 
-SimControllerMaster.params["recip"] = 1
+SimControllerMaster.params["recip"] = 0.5
 SimControllerMaster.params["n"] = 500
 #SimControllerMaster.params["k"] = 20
 SimControllerMaster.params["h"] = 0.02
 
-nitit=30
-ps = {"ImprovedSpatial": np.linspace(7,10,nitit),#np.linspace(0,8.5,1000),
+nitit=50
+ps = {"ImprovedSpatial": np.linspace(0.5,9,nitit),#np.linspace(0,8.5,1000),
     "Small_world":np.geomspace(1e-3,1,nitit),#np.geomspace(1e-4,1,1000) ,
         "Scale_free": np.linspace(1e-4,4,nitit), 
         "SBlock": 1-np.geomspace(1e-3,1,nitit),
@@ -46,8 +46,8 @@ net = sys.argv[3]
 torun2 = ps[net]
 torun =[]
 for v in torun2:
-    for r in [1]:#np.linspace(0,1,11):
-        torun.append( {"net":net,"p":v,"r":r}) 
+    for _ in range(2): #replicates
+        torun.append( {"net":net,"p":v,"r":None}) 
 
 
 stride = int(sys.argv[1])
@@ -60,7 +60,7 @@ for d in torun:
     SimControllerActual = SimControl(SimControllerMaster) #copy constructor
     SimControllerActual.params["Network_type"] = d["net"]
     SimControllerActual.params["p"] = d["p"]
-    SimControllerActual.params["recip"] = d["r"]
+    #SimControllerActual.params["recip"] = d["r"]
     
     SimControllerActual.params["k"] = 10
     SimControllerActual.params["StimSites"] = 0

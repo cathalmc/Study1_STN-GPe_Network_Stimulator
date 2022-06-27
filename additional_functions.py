@@ -718,6 +718,56 @@ def calculate_weigenvalues(elist,n):
     graph_measures["Condition"]=condition_number
     
     return graph_measures
+    
+def calculate_Unweigenvalues(elist,n):
+    #regular old graph laplacian
+    
+    A = np.zeros((n,n))
+    D = np.zeros((n,n))
+    for c in elist:
+        A[c[0],c[1]] = -1
+         
+    indegrees = [-np.sum(A[:,i]) for i in range(n)]
+
+    for i in range(n):
+        A[i,i]=indegrees[i]
+
+    L = A
+    try:
+        Lapeigenvalues = np.linalg.eigvals(L)
+        Fr = (np.linalg.norm(L,'fro'))**2
+        LapDeparture = np.sqrt(max(0,Fr - sum([abs(i)**2 for i in Lapeigenvalues])))
+        condition_number = np.linalg.cond(L)
+    except:
+        Lapeigenvalues = "Fail"
+        Fr = "Fail"
+        LapDeparture = "Fail"
+        condition_number = "Fail"
+        print("Eig calculation failed")
+    
+
+    F = nx.DiGraph()
+    F.add_edges_from( [(e[0],e[1]) for e in elist])
+    
+    graph_measures = {"mean_indegree":np.mean(indegrees),
+                        "var_indegree":np.var(indegrees)}
+    
+    try:
+        graph_measures["ASPL"] = nx.average_shortest_path_length(F)
+    except:
+        graph_measures["ASPL"] = 100
+        print("ASPL Failed")
+    try:
+        graph_measures["diameter"] = nx.diameter(F)
+    except:
+        graph_measures["diameter"] = 100
+        print("Diameter Failed")
+
+    graph_measures["eigs"] = Lapeigenvalues
+    graph_measures["LapDeparture"] = LapDeparture
+    graph_measures["Condition"]=condition_number
+    
+    return graph_measures
 
 
 def calc_network_measures(SG,GS,GG,n,dev=False):
@@ -734,7 +784,13 @@ def calc_network_measures(SG,GS,GG,n,dev=False):
 
     all_normed_edges = update_index(lsg,0,n,0) + update_index(lgs,n,0,0) + update_index(lgg,n,n,0)
     
-    graph_measures = calculate_weigenvalues(all_normed_edges,2*n)
+    
+    #########################################
+    ##Now using the unweighted eigenvalues
+    #########################################
+    
+    
+    graph_measures = calculate_Unweigenvalues(all_normed_edges,2*n)
     
     if dev:
         return STG_list,GTS_list,GTG_list, graph_measures, all_normed_edges
