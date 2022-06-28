@@ -50,7 +50,7 @@ torun2 = ps[net]
  #       torun.append( {"net":net,"p":v,"r":None}) 
 
 max_k = {100:90,500:350,1000:500}[SimControllerMaster.params["n"]]
-kvals = list(set([int(i+0.5) for i in np.geomspace(2,max_k,max_k-1)])) #geometrically spaced values
+kvals = list(set([int(i+0.5) for i in np.geomspace(2,max_k,40)])) #geometrically spaced values
 replicates = 2
 torun2=np.array([kv for _ in range(replicates) for kv in kvals]) 
 
@@ -73,7 +73,6 @@ for d in torun:
     SimControllerActual.params["k"] = d["k"]
     #SimControllerActual.params["recip"] = d["r"]
     
-    SimControllerActual.params["k"] = 10
     SimControllerActual.params["StimSites"] = 0
     
     SimControllerActual.params["StimAmplitude"] = 1 #80
