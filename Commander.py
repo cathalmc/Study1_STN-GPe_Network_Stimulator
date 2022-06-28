@@ -22,7 +22,7 @@ if tester=="tester":
     testrun=True
     print("Validating")
 
-SimControllerMaster.params["recip"] = 0.5
+SimControllerMaster.params["recip"] = 1
 SimControllerMaster.params["n"] = 500
 #SimControllerMaster.params["k"] = 20
 SimControllerMaster.params["h"] = 0.02
@@ -50,13 +50,13 @@ torun2 = ps[net]
  #       torun.append( {"net":net,"p":v,"r":None}) 
 
 max_k = {100:90,500:350,1000:500}[SimControllerMaster.params["n"]]
-kvals = list(set([int(i+0.5) for i in np.geomspace(2,max_k,40)])) #geometrically spaced values
-replicates = 2
+kvals = list(set([int(i+0.5) for i in np.geomspace(2,max_k,50)])) #geometrically spaced values
+replicates = 5
 torun2=np.array([kv for _ in range(replicates) for kv in kvals]) 
 
 torun =[]
 for v in torun2:
-    for _ in range(2): #replicates
+    for _ in range(5): #replicates
         torun.append( {"net":net,"k":v,"p":psC[net]}) 
 
 
