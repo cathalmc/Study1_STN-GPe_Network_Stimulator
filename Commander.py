@@ -52,12 +52,12 @@ torun2 = ps[net]
 max_k = {100:90,500:350,1000:500}[SimControllerMaster.params["n"]]
 kvals = list(set([int(i+0.5) for i in np.geomspace(2,max_k,50)])) #geometrically spaced values
 replicates = 5
-torun2=np.array([kv for _ in range(replicates) for kv in kvals]) 
+torun2= ps[net] #np.array([kv for _ in range(replicates) for kv in kvals]) 
 
 torun =[]
 for v in torun2:
     for _ in range(5): #replicates
-        torun.append( {"net":net,"k":v,"p":psC[net]}) 
+        torun.append( {"net":net,"k":10,"p":v}) 
 
 
 stride = int(sys.argv[1])
