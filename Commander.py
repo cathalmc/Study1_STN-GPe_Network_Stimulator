@@ -10,7 +10,7 @@ t0 = time.time()
 
 SimControllerMaster.params["name"] = "SG_July_NormSingle" ##### MAKE SURE NAME IS A SINGLE CONTINUOUS STRING SO SUBMITTER DOESNT GET CONFUSED
 SimControllerMaster.params["Network_type"] = sys.argv[3]
-SimControllerMaster.params["simtime"] = 5500
+SimControllerMaster.params["simtime"] = 10500
 
 try:
     tester = sys.argv[4]
@@ -24,10 +24,10 @@ if tester=="tester":
 
 SimControllerMaster.params["recip"] = 1
 SimControllerMaster.params["n"] = 500
-#SimControllerMaster.params["k"] = 20
-SimControllerMaster.params["h"] = 0.02
+SimControllerMaster.params["k"] = 10
+SimControllerMaster.params["h"] = 0.01
 
-nitit=50
+nitit=100
 ps = {"ImprovedSpatial": np.linspace(0.5,9,nitit),#np.linspace(0,8.5,1000),
     "Small_world":np.geomspace(1e-3,1,nitit),#np.geomspace(1e-4,1,1000) ,
         "Scale_free": np.linspace(1e-4,4,nitit), 
@@ -44,20 +44,21 @@ psC = {"ImprovedSpatial": 6,
 
 net = sys.argv[3]
 torun2 = ps[net]
+torun=[]
 
-#for v in torun2:
- #   for _ in range(2): #replicates
- #       torun.append( {"net":net,"p":v,"r":None}) 
-
-max_k = {100:90,500:350,1000:500}[SimControllerMaster.params["n"]]
-kvals = list(set([int(i+0.5) for i in np.geomspace(2,max_k,50)])) #geometrically spaced values
-replicates = 5
-torun2= ps[net] #np.array([kv for _ in range(replicates) for kv in kvals]) 
-
-torun =[]
 for v in torun2:
-    for _ in range(5): #replicates
-        torun.append( {"net":net,"k":10,"p":v}) 
+    for _ in range(2): #replicates
+        torun.append( {"net":net,"p":v,"r":None}) 
+
+#max_k = {100:90,500:350,1000:500}[SimControllerMaster.params["n"]]
+#kvals = list(set([int(i+0.5) for i in np.geomspace(2,max_k,50)])) #geometrically spaced values
+#replicates = 5
+#torun2= ps[net] #np.array([kv for _ in range(replicates) for kv in kvals]) 
+
+#torun =[]
+#for v in torun2:
+#    for _ in range(5): #replicates
+#        torun.append( {"net":net,"k":10,"p":v}) 
 
 
 stride = int(sys.argv[1])
@@ -70,8 +71,7 @@ for d in torun:
     SimControllerActual = SimControl(SimControllerMaster) #copy constructor
     SimControllerActual.params["Network_type"] = d["net"]
     SimControllerActual.params["p"] = d["p"]
-    SimControllerActual.params["k"] = d["k"]
-    #SimControllerActual.params["recip"] = d["r"]
+    #SimControllerActual.params["k"] = d["k"]
     
     SimControllerActual.params["StimSites"] = 0
     
