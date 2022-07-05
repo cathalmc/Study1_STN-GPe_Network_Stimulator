@@ -29,9 +29,9 @@ SimControllerMaster.params["h"] = 0.02
 
 nitit=100
 ps = {"ImprovedSpatial": np.linspace(0.5,9,nitit),#np.linspace(0,8.5,1000),
-    "Small_world":np.geomspace(1e-3,1,nitit),#np.geomspace(1e-4,1,1000) ,
+    "Small_world":np.geomspace(1e-2,1,nitit),#np.geomspace(1e-4,1,1000) ,
         "Scale_free": np.linspace(1e-4,4,nitit), 
-        "SBlock": 1-np.geomspace(1e-3,1,nitit),
+        "SBlock": 1-np.geomspace(1e-2,1,nitit),
         "Regular": 0,}
         
 psC = {"ImprovedSpatial": 6,
@@ -47,7 +47,7 @@ torun2 = ps[net]
 torun=[]
 
 for v in torun2:
-    for _ in range(3): #replicates
+    for _ in range(5): #replicates
         torun.append( {"net":net,"p":v,"r":None}) 
 
 #max_k = {100:90,500:350,1000:500}[SimControllerMaster.params["n"]]
